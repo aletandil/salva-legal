@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Volvé a Salvá</title>
+<link rel="stylesheet" href="estilo.css">
+<script>
+  // Mercado Pago redirige acá al terminar el pago. Lo único que tiene que
+  // pasar es que el teléfono vuelva a Salvá: la app, al recuperar el foco,
+  // consulta su propia reserva y muestra el estado real. No se le cree nada a
+  // esta página —ni a la URL— sobre si el pago salió: eso lo decide el webhook
+  // contra la API de Mercado Pago.
+  //
+  // El intento es inmediato y sin esperar al `load`: cuanto antes, menos
+  // chance de que la persona alcance a leer esto y se confunda.
+  try { window.location.replace('salva://pago'); } catch (e) {}
+</script>
+</head>
+<body>
+<main>
+  <h1 style="margin-top:56px">Listo</h1>
+  <div class="tarjeta">
+    <p style="margin-top:0">Ya podés volver a <strong>Salvá</strong> para ver tu
+    reserva y el código de retiro.</p>
+    <p><a href="salva://pago">Abrir Salvá</a></p>
+    <p style="color:var(--tinta-suave);font-size:14px;margin-bottom:0">
+      Si no se abre sola, cerrá esta pestaña y entrá a la app: la reserva se
+      actualiza igual.</p>
+  </div>
+</main>
+<footer>Salvá · Tandil</footer>
+</body>
+</html>
