@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Una oferta en Salvá</title>
+<meta property="og:title" content="Te comparten una oferta en Salvá">
+<meta property="og:description" content="Comida que iba a tirarse, a precio rebajado, en comercios de Tandil.">
+<meta property="og:type" content="website">
+<link rel="stylesheet" href="estilo.css">
+<script>
+  // El enlace que se comparte trae el id de la oferta. Si quien lo abre tiene
+  // la app, `salva://` la abre directo en esa oferta; si no, se queda en esta
+  // página, que explica qué es Salvá.
+  //
+  // No se intenta el salto de inmediato como en la vuelta del pago: ahí la
+  // persona venía de la app y quería volver. Acá muchos van a llegar desde
+  // WhatsApp sin tenerla instalada, y un salto que falla deja la pantalla en
+  // blanco un segundo antes de mostrar nada.
+  document.addEventListener('DOMContentLoaded', function () {
+    var id = new URLSearchParams(location.search).get('id');
+    if (!id) return;
+    var abrir = document.getElementById('abrir');
+    abrir.href = 'salva://oferta/' + encodeURIComponent(id);
+    abrir.hidden = false;
+  });
+</script>
+</head>
+<body>
+<main>
+  <h1 style="margin-top:56px">Te comparten una oferta</h1>
+  <div class="tarjeta">
+    <p style="margin-top:0"><strong>Salvá</strong> es comida que iba a tirarse,
+    a precio rebajado. Comercios de Tandil publican lo que les sobró al cierre;
+    vos lo reservás, lo pagás y lo retirás.</p>
+    <p><a id="abrir" hidden href="#">Abrir en la app</a></p>
+    <p style="color:var(--tinta-suave);font-size:14px;margin-bottom:0">
+      ¿Todavía no la tenés? Buscá <strong>Salvá</strong> en tu tienda de
+      aplicaciones.</p>
+  </div>
+</main>
+<footer>Salvá · Tandil</footer>
+</body>
+</html>
