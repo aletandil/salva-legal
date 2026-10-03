@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Volvé a Salvá</title>
+<link rel="stylesheet" href="estilo.css">
+<script>
+  // Acá llegan los links de los emails de cuenta: confirmar el registro y
+  // recuperar la contraseña. Supabase redirige con un código de un solo uso, y
+  // lo único que hace esta página es pasárselo a la app, que es la que lo
+  // canjea por la sesión.
+  //
+  // Existe porque un link `salva://` directo en el email no sirve: Gmail no lo
+  // hace tocable, igual que pasaba con las ofertas compartidas. Una página
+  // https sí es un link normal, y desde acá se salta a la app.
+  //
+  // El código sólo funciona en el teléfono que pidió el email: la app guardó
+  // ahí la otra mitad de la clave. Por eso la página no intenta hacer nada más
+  // que abrir la app, y explica qué hacer si se abrió en una computadora.
+  (function () {
+    var p = new URLSearchParams(window.location.search);
+    var h = new URLSearchParams(window.location.hash.replace(/^#/, ''));
+    var error = p.get('error_description') || h.get('error_description');
+    window.__salvaError = error;
+    if (error) return;
+    var destino = 'salva://cuenta' + window.location.search + window.location.hash;
+    window.__salvaDestino = destino;
+    try { window.location.replace(destino); } catch (e) {}
+  })();
+</script>
+</head>
+<body>
+<main>
+  <h1 style="margin-top:56px" id="titulo">Abrí Salvá</h1>
+  <div class="tarjeta" id="ok">
+    <p style="margin-top:0">Si la app no se abrió sola, tocá el botón:</p>
+    <p><a id="abrir" href="salva://cuenta">Abrir Salvá</a></p>
+    <p style="color:var(--tinta-suave);font-size:14px;margin-bottom:0">
+      Este link funciona en el teléfono donde pediste el email. Si lo abriste en
+      una computadora, abrilo desde el email en tu teléfono.</p>
+  </div>
+  <div class="tarjeta" id="vencido" hidden>
+    <p style="margin-top:0">Este link ya no sirve: se usó o pasó demasiado
+    tiempo.</p>
+    <p style="margin-bottom:0">Pedí uno nuevo desde la app, en
+    <em>¿Olvidaste tu contraseña?</em></p>
+  </div>
+</main>
+<footer>Salvá · Tandil</footer>
+<script>
+  if (window.__salvaError) {
+    document.getElementById('titulo').textContent = 'El link venció';
+    document.getElementById('ok').hidden = true;
+    document.getElementById('vencido').hidden = false;
+  } else if (window.__salvaDestino) {
+    document.getElementById('abrir').href = window.__salvaDestino;
+  }
+</script>
+</body>
+</html>
