@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Un comercio en Salvá</title>
+<meta property="og:title" content="Este comercio está en Salvá">
+<meta property="og:description" content="Lo que le sobra al cierre, a precio rebajado. Reservalo en la app y retiralo en el local.">
+<meta property="og:type" content="website">
+<link rel="stylesheet" href="estilo.css">
+<script>
+  // Esta página es el destino del link y del QR del cartel que el comercio
+  // pega en la caja. Trae el id del comercio: si quien la abre tiene la app,
+  // `salva://` la abre directo en ese local; si no, se queda acá.
+  //
+  // El id y no un nombre corto porque el id ya existe y no cambia: un nombre
+  // habría que elegirlo, validarlo y mantenerlo único para siempre.
+  //
+  // Igual que en la oferta, no se salta solo: el QR lo escanea sobre todo
+  // gente que todavía no tiene la app, y un salto que falla deja la pantalla
+  // en blanco un segundo antes de mostrar nada.
+  document.addEventListener('DOMContentLoaded', function () {
+    var id = new URLSearchParams(location.search).get('id');
+    if (!id) return;
+    var abrir = document.getElementById('abrir');
+    abrir.href = 'salva://comercio/' + encodeURIComponent(id);
+    abrir.hidden = false;
+  });
+</script>
+</head>
+<body>
+<main>
+  <h1 style="margin-top:56px">Este comercio está en Salvá</h1>
+  <div class="tarjeta">
+    <p style="margin-top:0">Cuando le sobra algo al cierre, lo publica en
+    <strong>Salvá</strong> a precio rebajado. Seguilo en la app y enterate
+    apenas aparece: lo reservás, lo pagás y lo retirás acá.</p>
+    <p><a id="abrir" hidden href="#">Abrir en la app</a></p>
+    <p style="color:var(--tinta-suave);font-size:14px;margin-bottom:0">
+      ¿Todavía no la tenés? Buscá <strong>Salvá</strong> en tu tienda de
+      aplicaciones.</p>
+  </div>
+</main>
+<footer>Salvá · Tandil</footer>
+</body>
+</html>
