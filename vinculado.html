@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Mercado Pago · Salvá</title>
+<link rel="stylesheet" href="estilo.css">
+</head>
+<body>
+<main>
+  <h1 id="titulo" style="margin-top:56px">Listo</h1>
+  <div class="tarjeta">
+    <p id="texto" style="margin-top:0">Tu cuenta de Mercado Pago quedó
+    vinculada. Desde ahora cobrás directo en ella.</p>
+    <p><a id="abrir" href="salva://mercadopago">Volver a Salvá</a></p>
+    <p id="ayuda" style="color:var(--tinta-suave);font-size:14px;margin-bottom:0">
+      Si no se abre sola, cerrá esta pestaña y entrá a la app.</p>
+  </div>
+</main>
+<footer>Salvá · Tandil</footer>
+<script>
+  // Acá termina la vinculación con Mercado Pago (la función `mp-oauth`
+  // redirige con el resultado). La página no decide nada: la cuenta ya quedó
+  // guardada, o no, del lado del servidor, y la app lo vuelve a consultar.
+  //
+  // Por la URL viaja una clave y no un texto: así nadie arma un link a
+  // nuestro dominio que diga lo que quiera.
+  var motivos = {
+    faltan_datos: 'Mercado Pago no mandó los datos de la autorización.',
+    pedido_vencido: 'El pedido de vinculación venció.',
+    rechazada: 'Mercado Pago rechazó la vinculación.',
+    incompleta: 'La respuesta de Mercado Pago vino incompleta.',
+    cuenta_de_salva: 'Esa cuenta de Mercado Pago es la de Salvá. ' +
+      'Vinculá la cuenta del local.',
+    cobros_abiertos: 'Tenés ventas abiertas en tu cuenta actual: sin ' +
+      'entregar, por devolver o con un pago en curso. Cuando se cierren, ' +
+      'vas a poder cambiar de cuenta.',
+    no_se_guardo: 'No pudimos guardar la cuenta.'
+  };
+  var q = new URLSearchParams(location.search);
+  // Sólo enlaces de la app: si no, la página serviría para mandar a la gente
+  // a cualquier lado desde nuestro dominio.
+  var app = q.get('app') || '';
+  if (app.indexOf('salva://') !== 0) app = 'salva://mercadopago';
+  document.getElementById('abrir').href = app;
+
+  if (q.get('estado') === 'error') {
+    document.getElementById('titulo').textContent =
+      'No pudimos vincular tu cuenta';
+    document.getElementById('texto').textContent =
+      (motivos[q.get('motivo')] || 'Algo salió mal.') +
+      ' Probá de nuevo desde la app.';
+    document.getElementById('ayuda').style.display = 'none';
+  } else {
+    try { window.location.replace(app); } catch (e) {}
+  }
+</script>
+</body>
+</html>
