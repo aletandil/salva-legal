@@ -14,7 +14,10 @@
   //
   // El intento es inmediato y sin esperar al `load`: cuanto antes, menos
   // chance de que la persona alcance a leer esto y se confunda.
-  try { window.location.replace('salva://pago'); } catch (e) {}
+  // La consulta viaja al link: trae la reserva (`?reserva=`) para que la app
+  // abra la espera de esa compra y no la lista. Una app vieja la ignora.
+  var destino = 'salva://pago' + location.search;
+  try { window.location.replace(destino); } catch (e) {}
 </script>
 </head>
 <body>
@@ -23,7 +26,8 @@
   <div class="tarjeta">
     <p style="margin-top:0">Ya podés volver a <strong>Salvá</strong> para ver tu
     reserva y el código de retiro.</p>
-    <p><a href="salva://pago">Abrir Salvá</a></p>
+    <p><a id="abrir" href="salva://pago">Abrir Salvá</a></p>
+    <script>document.getElementById('abrir').href = destino;</script>
     <p style="color:var(--tinta-suave);font-size:14px;margin-bottom:0">
       Si no se abre sola, cerrá esta pestaña y entrá a la app: la reserva se
       actualiza igual.</p>
