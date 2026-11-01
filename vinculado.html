@@ -4,6 +4,9 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex">
+<!-- Con `continuar` la URL lleva el código de Mercado Pago: que no salga
+     como referer a ningún lado. -->
+<meta name="referrer" content="no-referrer">
 <title>Mercado Pago · Salvá</title>
 <link rel="stylesheet" href="estilo.css">
 </head>
@@ -20,9 +23,10 @@
 </main>
 <footer>Salvá · Tandil</footer>
 <script>
-  // Acá termina la vinculación con Mercado Pago (la función `mp-oauth`
-  // redirige con el resultado). La página no decide nada: la cuenta ya quedó
-  // guardada, o no, del lado del servidor, y la app lo vuelve a consultar.
+  // Acá vuelve la vinculación con Mercado Pago (la función `mp-oauth`
+  // redirige con el resultado). La página no decide nada: con `continuar`
+  // le pasa el código a la app, que la completa (0660); con `ok` o `error`
+  // (la app vieja) la cuenta ya quedó guardada, o no, del lado del servidor.
   //
   // Por la URL viaja una clave y no un texto: así nadie arma un link a
   // nuestro dominio que diga lo que quiera.
@@ -36,7 +40,9 @@
     cobros_abiertos: 'Tenés ventas abiertas en tu cuenta actual: sin ' +
       'entregar, por devolver o con un pago en curso. Cuando se cierren, ' +
       'vas a poder cambiar de cuenta.',
-    no_se_guardo: 'No pudimos guardar la cuenta.'
+    no_se_guardo: 'No pudimos guardar la cuenta.',
+    actualizar_app: 'Para vincular tu Mercado Pago necesitás la última ' +
+      'versión de Salvá. Actualizala desde la tienda.'
   };
   var q = new URLSearchParams(location.search);
   // Sólo enlaces de la app: si no, la página serviría para mandar a la gente
@@ -45,7 +51,20 @@
   if (app.indexOf('salva://') !== 0) app = 'salva://mercadopago';
   document.getElementById('abrir').href = app;
 
-  if (q.get('estado') === 'error') {
+  if (q.get('estado') === 'continuar') {
+    // La vinculación todavía no terminó: la completa la app que la empezó,
+    // con un secreto que sólo tiene ese teléfono. Si esta página se abrió en
+    // otro (un link reenviado), la app de acá no lo tiene y no vincula nada;
+    // y si no hay app, esto es lo único que se ve.
+    document.getElementById('titulo').textContent = 'Volvé a Salvá';
+    document.getElementById('texto').textContent =
+      'Falta un paso: se termina en la app, en el teléfono donde tocaste ' +
+      '"Vincular mi Mercado Pago". Si alguien te mandó este link, no sigas: ' +
+      'vincularía tu cuenta al local de otra persona.';
+    document.getElementById('ayuda').textContent =
+      'Si la app no se abre sola, tocá "Volver a Salvá".';
+    try { window.location.replace(app); } catch (e) {}
+  } else if (q.get('estado') === 'error') {
     document.getElementById('titulo').textContent =
       'No pudimos vincular tu cuenta';
     document.getElementById('texto').textContent =
