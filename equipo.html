@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<!-- El token va después del #: no viaja al servidor ni a la vista previa. -->
+<meta name="robots" content="noindex">
+<meta name="referrer" content="no-referrer">
+<title>Invitación al equipo · Salvá</title>
+<meta property="og:title" content="Te invitaron al equipo de un local en Salvá">
+<meta property="og:description" content="Abrí el link desde el teléfono para sumarte.">
+<meta property="og:type" content="website">
+<link rel="stylesheet" href="estilo.css">
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    var token = location.hash.replace(/^#/, '');
+    if (!/^[0-9a-f]{48}$/.test(token)) { document.getElementById('nosirve').hidden = false; return; }
+    var abrir = document.getElementById('abrir');
+    abrir.href = 'salva://equipo?t=' + token;
+    document.getElementById('invitacion').hidden = false;
+    // Con la app instalada se abre sola; si no, queda la página.
+    location.href = abrir.href;
+  });
+</script>
+</head>
+<body>
+<main>
+  <h1 style="margin-top:56px">Te invitaron a un equipo</h1>
+
+  <div class="tarjeta" id="invitacion" hidden>
+    <p style="margin-top:0">Un local de Salvá te sumó a su equipo. Abrí la
+    invitación en la app: ahí ves de qué local es y con qué rol, y la
+    aceptás con tu cuenta (si no tenés, la creás).</p>
+    <p style="margin-bottom:0"><a id="abrir" href="#"><strong>Abrir en la app</strong></a></p>
+  </div>
+
+  <div class="tarjeta" id="nosirve" hidden>
+    <p style="margin-top:0"><strong>Este link no está completo.</strong></p>
+    <p style="margin-bottom:0">Pedile a quien te invitó que te lo mande de nuevo.</p>
+  </div>
+
+  <p style="color:var(--tinta-suave);font-size:14px">
+    ¿No tenés la app? Bajala de Google Play o del App Store buscando
+    <strong>Salvá</strong>, entrá y pegá este link en Perfil → "Unirme al
+    equipo de un local".</p>
+</main>
+<footer>Salvá · Tandil</footer>
+</body>
+</html>

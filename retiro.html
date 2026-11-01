@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<!-- Que no se indexe ni se mande la dirección completa a otro sitio: el
+     token va después del #, pero por las dudas. -->
+<meta name="robots" content="noindex">
+<meta name="referrer" content="no-referrer">
+<title>Retiro compartido · Salvá</title>
+<meta property="og:title" content="Te pidieron que retires una compra en Salvá">
+<meta property="og:description" content="Abrí el link para ver el código de retiro.">
+<meta property="og:type" content="website">
+<link rel="stylesheet" href="estilo.css">
+<script>
+  var SUPABASE_URL = 'https://jjlrlfykiqheiliyeuwk.supabase.co';
+  var SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImpqbHJsZnlraXFoZWlsaXlldXdrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODkxMzIzODQsImV4cCI6MjEwNDcwODM4NH0.7XpWeksD6BIPe0T02g6Qr5_be008a-Rfq4Z2E6TTxG0';
+
+  function texto(id, valor) { document.getElementById(id).textContent = valor; }
+
+  // La hora del local, no la del teléfono: igual que la app.
+  function horario(desde, hasta) {
+    var o = { timeZone: 'America/Argentina/Buenos_Aires', hour: '2-digit', minute: '2-digit', hour12: false };
+    var d = { timeZone: 'America/Argentina/Buenos_Aires', day: 'numeric', month: 'short' };
+    var a = new Date(desde), b = new Date(hasta);
+    return a.toLocaleDateString('es-AR', d) + ' de ' + a.toLocaleTimeString('es-AR', o) +
+      ' a ' + b.toLocaleTimeString('es-AR', o);
+  }
+
+  function plata(n) { return '$ ' + Math.round(n).toLocaleString('es-AR'); }
+
+  document.addEventListener('DOMContentLoaded', function () {
+    var token = location.hash.replace(/^#/, '');
+    if (!/^[0-9a-f]{48}$/.test(token)) { document.getElementById('nosirve').hidden = false; return; }
+
+    // Quien tiene la app la abre en el mismo ticket, con el QR.
+    var abrir = document.getElementById('abrir');
+    abrir.href = 'salva://retiro?t=' + token;
+    abrir.hidden = false;
+
+    fetch(SUPABASE_URL + '/rest/v1/rpc/ticket_compartido', {
+      method: 'POST',
+      headers: {
+        'apikey': SUPABASE_ANON_KEY,
+        'Authorization': 'Bearer ' + SUPABASE_ANON_KEY,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ p_token: token })
+    }).then(function (r) { return r.ok ? r.json() : []; })
+      .then(function (filas) {
+        var t = filas && filas[0];
+        if (!t) { document.getElementById('nosirve').hidden = false; return; }
+        texto('para', 'Para ' + t.quien_retira);
+        texto('codigo', t.pickup_code.split('').join(' '));
+        texto('comercio', t.comercio);
+        texto('direccion', t.direccion || '');
+        texto('horario', horario(t.pickup_start_at, t.pickup_end_at));
+        texto('producto', t.cantidad + ' × ' + t.oferta);
+        texto('pagado', 'Ya está pagado: ' + plata(t.total_pagado));
+        document.getElementById('ticket').hidden = false;
+      })
+      .catch(function () { document.getElementById('error').hidden = false; });
+  });
+</script>
+</head>
+<body>
+<main>
+  <h1 style="margin-top:56px">Retiro compartido</h1>
+
+  <div class="tarjeta" id="ticket" hidden>
+    <p id="para" style="margin-top:0;font-weight:700"></p>
+    <p style="margin:0;font-size:12px;letter-spacing:.8px">MOSTRÁ ESTE CÓDIGO EN EL COMERCIO</p>
+    <p id="codigo" style="font-size:36px;font-weight:800;letter-spacing:2px;margin:8px 0"></p>
+    <p id="pagado" style="margin-top:0"></p>
+    <p><strong id="comercio"></strong><br><span id="direccion"></span></p>
+    <p id="horario"></p>
+    <p id="producto" style="margin-bottom:0"></p>
+  </div>
+
+  <div class="tarjeta" id="nosirve" hidden>
+    <p style="margin-top:0"><strong>Este link ya no está activo.</strong></p>
+    <p style="margin-bottom:0">Puede que ya se haya retirado, que se haya
+    cancelado o que quien te lo mandó lo haya dejado de compartir.</p>
+  </div>
+
+  <div class="tarjeta" id="error" hidden>
+    <p style="margin:0">No pudimos cargar el retiro. Revisá tu conexión y
+    volvé a abrir el link.</p>
+  </div>
+
+  <p><a id="abrir" hidden href="#">Abrir en la app</a></p>
+  <p style="color:var(--tinta-suave);font-size:14px">
+    <strong>Salvá</strong> es comida que iba a tirarse, a precio rebajado, en
+    comercios de Tandil.</p>
+</main>
+<footer>Salvá · Tandil</footer>
+</body>
+</html>
