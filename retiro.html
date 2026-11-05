@@ -56,7 +56,10 @@
         texto('direccion', t.direccion || '');
         texto('horario', horario(t.pickup_start_at, t.pickup_end_at));
         texto('producto', t.cantidad + ' × ' + t.oferta);
-        texto('pagado', 'Ya está pagado: ' + plata(t.total_pagado));
+        // Para pagar en el local (0910), quien va tiene que llevar la plata.
+        texto('pagado', t.a_pagar != null
+          ? 'Se paga al retirar: ' + plata(t.a_pagar)
+          : 'Ya está pagado: ' + plata(t.total_pagado));
         document.getElementById('ticket').hidden = false;
       })
       .catch(function () { document.getElementById('error').hidden = false; });
