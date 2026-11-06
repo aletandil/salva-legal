@@ -1,0 +1,15 @@
+[
+  {
+    "relation": [
+      "delegate_permission/common.handle_all_urls",
+      "delegate_permission/common.get_login_creds"
+    ],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.oportia.salva",
+      "sha256_cert_fingerprints": [
+        "86:35:D4:18:AF:61:8D:9C:81:E7:9D:EA:1D:3F:D6:D7:FC:A5:FD:9C:CF:60:01:8B:7E:BE:B2:C7:E8:27:EE:EA"
+      ]
+    }
+  }
+]
