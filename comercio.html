@@ -7,23 +7,67 @@
 <meta property="og:title" content="Este comercio está en Salvá">
 <meta property="og:description" content="Lo que le sobra al cierre, a precio rebajado. Reservalo en la app y retiralo en el local.">
 <meta property="og:type" content="website">
+<meta property="og:site_name" content="Salvá">
+<meta property="og:locale" content="es_AR">
+<meta property="og:image" content="https://salvaapp.com.ar/compartir.jpg">
+<meta property="og:image:width" content="1024">
+<meta property="og:image:height" content="500">
+<meta name="twitter:card" content="summary_large_image">
 <link rel="stylesheet" href="estilo.css">
+<style>
+  .botones { display: grid; gap: 10px; margin: 20px 0 8px; }
+  .boton { display: block; text-align: center; padding: 14px 16px; border-radius: 14px;
+           font-weight: 700; text-decoration: none; font-size: 16px; }
+  .boton.play { padding: 18px 16px; font-size: 18px; background: #06245E; color: #fff; }
+  .boton.borde { border: 1px solid var(--borde, #DDE6F1); color: #0868DB; }
+  [hidden] { display: none !important; }
+</style>
 <script>
   // Esta página es el destino del link y del QR del cartel que el comercio
-  // pega en la caja. Trae el id del comercio: si quien la abre tiene la app,
-  // `salva://` la abre directo en ese local; si no, se queda acá.
+  // pega en la caja. Trae el id del comercio.
   //
-  // El id y no un nombre corto porque el id ya existe y no cambia: un nombre
-  // habría que elegirlo, validarlo y mantenerlo único para siempre.
+  // Las etiquetas de arriba son las genéricas: con el Worker de Cloudflare
+  // delante (cloudflare/compartir en el repo de la app, 1020) se cambian por
+  // las de este local —nombre, foto, cuántas ofertas tiene— para la vista
+  // previa de WhatsApp.
   //
-  // Igual que en la oferta, no se salta solo: el QR lo escanea sobre todo
-  // gente que todavía no tiene la app, y un salto que falla deja la pantalla
-  // en blanco un segundo antes de mostrar nada.
+  // No se salta solo a la app: el QR lo escanea sobre todo gente que todavía
+  // no la tiene, y un salto que falla deja la pantalla en blanco un segundo
+  // antes de mostrar nada. El salto es el botón.
+  var PAQUETE = 'com.oportia.salva';
+  var UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+  // El id del local en el referrer: Play lo guarda con la instalación, y así
+  // se ve cuánta gente trae cada cartel.
+  function play(id) {
+    return 'https://play.google.com/store/apps/details?id=' + PAQUETE +
+      '&referrer=' + encodeURIComponent('utm_source=compartir&utm_medium=local' +
+        (id ? '&utm_content=' + id : ''));
+  }
+  var IOS = /iPhone|iPad|iPod/i.test(navigator.userAgent) ||
+            (/Macintosh/i.test(navigator.userAgent) && navigator.maxTouchPoints > 1);
+  var ANDROID = /Android/i.test(navigator.userAgent);
+
   document.addEventListener('DOMContentLoaded', function () {
-    var id = new URLSearchParams(location.search).get('id');
-    if (!id) return;
+    var id = new URLSearchParams(location.search).get('id') || '';
+    var valido = UUID.test(id);
+    var bajar = document.getElementById('bajar');
+    bajar.href = play(valido ? id : '');
+    if (IOS) {
+      // Salvá no está en el App Store: se dice, en vez de mandar a una
+      // tienda que no la tiene.
+      bajar.hidden = true;
+      document.getElementById('ios').hidden = false;
+    }
+    if (!valido) return;
     var abrir = document.getElementById('abrir');
-    abrir.href = 'salva://comercio/' + encodeURIComponent(id);
+    var camino = 'comercio/' + encodeURIComponent(id);
+    // En Android, `intent:` abre la app si está y, si no, Play; con
+    // `salva://` solo, sin la app no pasaba nada.
+    abrir.href = ANDROID
+      ? 'intent://' + camino + '#Intent;scheme=salva;package=' + PAQUETE +
+        ';S.browser_fallback_url=' + encodeURIComponent(play(id)) + ';end'
+      : 'salva://' + camino;
+    if (IOS) abrir.textContent = 'Ya tengo la app: abrir';
     abrir.hidden = false;
   });
 </script>
@@ -35,12 +79,14 @@
     <p style="margin-top:0">Cuando le sobra algo al cierre, lo publica en
     <strong>Salvá</strong> a precio rebajado. Seguilo en la app y enterate
     apenas aparece: lo reservás, lo pagás y lo retirás acá.</p>
-    <p><a id="abrir" hidden href="#">Abrir en la app</a></p>
-    <p style="color:var(--tinta-suave);font-size:14px;margin-bottom:0">
-      ¿Todavía no la tenés? Buscá <strong>Salvá</strong> en tu tienda de
-      aplicaciones.</p>
   </div>
+  <div class="botones">
+    <a class="boton lleno play" id="bajar" href="https://play.google.com/store/apps/details?id=com.oportia.salva">Descargar en Google Play</a>
+    <a class="boton borde" id="abrir" hidden href="#">Abrir en la app</a>
+  </div>
+  <p id="ios" hidden style="color:var(--tinta-suave);font-size:14px">Salvá
+  todavía no está en el App Store: por ahora es sólo para Android.</p>
 </main>
-<footer>Salvá · Tandil</footer>
+<footer>Salvá · Tandil · <a href="privacidad.html">Privacidad</a> · <a href="terminos.html">Términos</a></footer>
 </body>
 </html>

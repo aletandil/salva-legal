@@ -4,41 +4,297 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Una oferta en Salvá</title>
-<meta property="og:title" content="Te comparten una oferta en Salvá">
-<meta property="og:description" content="Comida que iba a tirarse, a precio rebajado, en comercios de Tandil.">
+<meta name="description" content="Comida que iba a tirarse, a precio rebajado, en comercios de Tandil. Reservala en la app y retirala en el local.">
+<!-- Open Graph: lo que muestra WhatsApp al pegar el link.
+     Éstas son las genéricas. Con el Worker de Cloudflare delante
+     (cloudflare/compartir en el repo de la app, 1020), se reemplazan por las
+     de cada oferta —foto, precio, horario— antes de que lleguen al robot de
+     WhatsApp, que no corre JavaScript. Sin el Worker, quedan éstas. -->
+<meta property="og:site_name" content="Salvá">
+<meta property="og:locale" content="es_AR">
 <meta property="og:type" content="website">
+<meta property="og:title" content="Te comparten una oferta en Salvá">
+<meta property="og:description" content="Comida que iba a tirarse, a precio rebajado, en comercios de Tandil. Tocá para ver qué es, cuánto sale y hasta qué hora se retira.">
+<meta property="og:image" content="https://salvaapp.com.ar/compartir.jpg">
+<meta property="og:image:width" content="1024">
+<meta property="og:image:height" content="500">
+<meta property="og:image:alt" content="Salvá. Dale otra oportunidad.">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#06245E">
+<link rel="icon" href="icono.png">
 <link rel="stylesheet" href="estilo.css">
+<style>
+  /* Los colores de la app (Azul Salvá, 2026-10-28) para esta página, que es
+     la primera vez que alguien ve Salvá. El resto del sitio sigue con la
+     hoja común. */
+  :root {
+    --primario: #0868DB; --marino: #06245E; --ambar: #E08A16;
+    --ambar-texto: #A15D00; --ambar-tinte: #FDF3E2; --sobre-primario: #fff;
+    --tinta: #0E1A33; --tinta-suave: #4D5A72; --fondo: #F6F9FD;
+    --papel: #FFFFFF; --borde: #DDE6F1; --alt: #EEF4FB;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --primario: #4AA3FF; --marino: #A9D4FF; --ambar: #F2A93B;
+      --ambar-texto: #F2A93B; --ambar-tinte: #33260F; --sobre-primario: #04122B;
+      --tinta: #E8EEF7; --tinta-suave: #A3B0C4; --fondo: #0A1328;
+      --papel: #111D36; --borde: #24324F; --alt: #182643;
+    }
+  }
+  body { background: var(--fondo); color: var(--tinta); }
+  main { max-width: 480px; }
+  .marca { display: flex; align-items: center; gap: 10px; margin: 20px 0 16px;
+           font-weight: 800; font-size: 20px; color: var(--tinta); text-decoration: none; }
+  .marca img { width: 32px; height: 32px; border-radius: 8px; }
+  .oferta { background: var(--papel); border: 1px solid var(--borde);
+            border-radius: 20px; overflow: hidden; box-shadow: 0 4px 16px rgba(14,26,51,.05); }
+  .foto { position: relative; aspect-ratio: 16 / 10; background:
+          linear-gradient(135deg, #0868DB, #06245E); }
+  .foto img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .foto .rubro { position: absolute; inset: 0; display: grid; place-items: center;
+                 color: #fff; font-weight: 800; font-size: 22px; text-align: center; padding: 16px; }
+  .descuento { position: absolute; top: 12px; left: 12px; background: #E08A16;
+               color: #2B1B02; font-weight: 800; font-size: 14px; padding: 4px 10px;
+               border-radius: 999px; }
+  .cuerpo { padding: 16px 20px 20px; }
+  .cuerpo h1 { font-size: 22px; line-height: 1.25; margin: 0 0 4px; }
+  .local { margin: 0; color: var(--tinta-suave); font-size: 15px; }
+  .precios { display: flex; align-items: baseline; gap: 10px; margin: 14px 0 6px; flex-wrap: wrap; }
+  .precio { font-size: 28px; font-weight: 800; color: var(--marino); }
+  .antes { color: var(--tinta-suave); text-decoration: line-through; font-size: 16px; }
+  .retiro { display: inline-block; background: var(--ambar-tinte); color: var(--ambar-texto);
+            font-weight: 700; font-size: 14px; padding: 6px 12px; border-radius: 999px; margin: 6px 0 0; }
+  .quedan { margin: 10px 0 0; font-size: 14px; color: var(--tinta-suave); }
+  .descripcion { margin: 12px 0 0; font-size: 15px; white-space: pre-line; }
+  .sorpresa { margin: 10px 0 0; font-size: 13px; color: var(--tinta-suave); }
+  .botones { display: grid; gap: 10px; margin: 20px 0 8px; }
+  .boton { display: block; text-align: center; padding: 14px 16px; border-radius: 14px;
+           font-weight: 700; text-decoration: none; font-size: 16px; }
+  .boton.lleno { background: var(--primario); color: var(--sobre-primario); }
+  .boton.borde { border: 1px solid var(--borde); color: var(--primario); background: var(--papel); }
+  /* El de Play, grande: sin la app es lo único que sirve. */
+  .boton.play { padding: 18px 16px; font-size: 18px; background: var(--marino); }
+  @media (prefers-color-scheme: dark) { .boton.play { color: #04122B; } }
+  .nota { font-size: 14px; color: var(--tinta-suave); }
+  .esqueleto { background: var(--alt); border-radius: 8px; height: 18px; margin: 8px 0; }
+  .tarjeta { background: var(--papel); border-color: var(--borde); }
+  [hidden] { display: none !important; }
+</style>
 <script>
-  // El enlace que se comparte trae el id de la oferta. Si quien lo abre tiene
-  // la app, `salva://` la abre directo en esa oferta; si no, se queda en esta
-  // página, que explica qué es Salvá.
+  // La página de una oferta compartida (0770 en el repo de la app).
   //
-  // No se intenta el salto de inmediato como en la vuelta del pago: ahí la
-  // persona venía de la app y quería volver. Acá muchos van a llegar desde
-  // WhatsApp sin tenerla instalada, y un salto que falla deja la pantalla en
-  // blanco un segundo antes de mostrar nada.
+  // El link que se manda por WhatsApp trae el id de la oferta. Con la app
+  // instalada y el dominio verificado (`.well-known/assetlinks.json`),
+  // Android no llega acá: abre la app directo. Si llega —sin la app, desde una
+  // computadora, o antes de verificar el dominio— esta página muestra la
+  // oferta y ofrece abrirla en la app o bajarla.
+  //
+  // Lee `oferta_publica` con la anon key, como `retiro.html`. La anon key es
+  // pública por diseño: lo que se puede leer con ella lo decide la base, y
+  // esa función sólo devuelve ofertas que el feed ya muestra sin cuenta.
+  //
+  // No se salta a la app solo: muchos llegan desde WhatsApp sin tenerla, y un
+  // salto que falla deja la pantalla en blanco un segundo antes de mostrar
+  // nada. El salto es el botón.
+  var SUPABASE_URL = 'https://jjlrlfykiqheiliyeuwk.supabase.co';
+  var SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImpqbHJsZnlraXFoZWlsaXlldXdrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODkxMzIzODQsImV4cCI6MjEwNDcwODM4NH0.7XpWeksD6BIPe0T02g6Qr5_be008a-Rfq4Z2E6TTxG0';
+  // Para probar la página contra la base local sin tocar este archivo:
+  // `oferta.html?id=...&api=http://127.0.0.1:54321&key=<anon local>`. Sólo
+  // direcciones locales: un `api` de afuera haría que la página le muestre a
+  // quien abrió el link lo que quiera quien lo armó.
+  (function () {
+    var q = new URLSearchParams(location.search);
+    var api = q.get('api') || '';
+    if (/^http:\/\/(127\.0\.0\.1|localhost):\d+$/.test(api) && q.get('key')) {
+      SUPABASE_URL = api;
+      SUPABASE_ANON_KEY = q.get('key');
+    }
+  })();
+  var PAQUETE = 'com.oportia.salva';
+  // Con el id de la oferta en el referrer: Play lo guarda con la
+  // instalación, y así se puede medir cuántas instalaciones trae un link
+  // compartido, y cuál.
+  function play(id) {
+    return 'https://play.google.com/store/apps/details?id=' + PAQUETE +
+      '&referrer=' + encodeURIComponent('utm_source=compartir&utm_medium=oferta' +
+        (id ? '&utm_content=' + id : ''));
+  }
+  // iPhone y iPad (los iPad nuevos se presentan como Mac con pantalla
+  // táctil). Salvá no está en el App Store: ahí no hay botón de Play, y se
+  // dice la verdad en vez de mandar a una tienda que no la tiene.
+  var IOS = /iPhone|iPad|iPod/i.test(navigator.userAgent) ||
+            (/Macintosh/i.test(navigator.userAgent) && navigator.maxTouchPoints > 1);
+  var ANDROID = /Android/i.test(navigator.userAgent);
+  var ZONA = 'America/Argentina/Buenos_Aires';
+
+  function texto(id, valor) { document.getElementById(id).textContent = valor; }
+  function mostrar(id) { document.getElementById(id).hidden = false; }
+
+  // A la argentina, como en la app: "$ 4.000", sin centavos.
+  function plata(n) { return '$ ' + Math.round(Number(n)).toLocaleString('es-AR'); }
+
+  // El día en la hora del local, no la del teléfono.
+  function dia(d) {
+    return new Intl.DateTimeFormat('en-CA', { timeZone: ZONA, year: 'numeric', month: '2-digit', day: '2-digit' }).format(d);
+  }
+  function hora(d) {
+    return d.toLocaleTimeString('es-AR', { timeZone: ZONA, hour: '2-digit', minute: '2-digit', hour12: false });
+  }
+  // "Hoy de 18:00 a 20:30", "Mañana de ...", o la fecha: una oferta cargada
+  // para mañana no puede decir "hoy".
+  function cuando(d) {
+    var hoy = new Date(), manana = new Date(Date.now() + 864e5);
+    return dia(d) === dia(hoy) ? 'hoy'
+      : dia(d) === dia(manana) ? 'mañana'
+      : d.toLocaleDateString('es-AR', { timeZone: ZONA, weekday: 'long', day: 'numeric', month: 'short' });
+  }
+  function ventana(desde, hasta) {
+    var a = new Date(desde), b = new Date(hasta);
+    // Una que ya empezó dice hasta cuándo: es lo que decide si llegás.
+    var texto = a <= new Date() ? 'Hasta ' + cuando(b) + ' a las ' + hora(b)
+      : dia(a) === dia(b) ? cuando(a) + ' de ' + hora(a) + ' a ' + hora(b)
+      : cuando(a) + ' ' + hora(a) + ' a ' + cuando(b) + ' ' + hora(b);
+    return texto.charAt(0).toUpperCase() + texto.slice(1);
+  }
+
+  // En Android, una dirección `intent:` abre la app si está y, si no, Play.
+  // En el resto, el esquema propio: sin la app no pasa nada, y para eso está
+  // el otro botón.
+  function enlaceALaApp(id) {
+    var camino = 'oferta/' + encodeURIComponent(id);
+    if (ANDROID) {
+      return 'intent://' + camino + '#Intent;scheme=salva;package=' + PAQUETE +
+             ';S.browser_fallback_url=' + encodeURIComponent(play(id)) + ';end';
+    }
+    return 'salva://' + camino;
+  }
+
   document.addEventListener('DOMContentLoaded', function () {
-    var id = new URLSearchParams(location.search).get('id');
-    if (!id) return;
+    var id = new URLSearchParams(location.search).get('id') || '';
+    var valido = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id);
+    document.getElementById('bajar').href = play(valido ? id : '');
+    if (IOS) {
+      document.getElementById('bajar').hidden = true;
+      mostrar('ios');
+      texto('abrir', 'Ya tengo la app: abrir');
+    }
+    // Un uuid y nada más: viene de afuera.
+    if (!valido) {
+      document.getElementById('cargando').hidden = true;
+      mostrar('nosirve');
+      return;
+    }
     var abrir = document.getElementById('abrir');
-    abrir.href = 'salva://oferta/' + encodeURIComponent(id);
+    abrir.href = enlaceALaApp(id);
     abrir.hidden = false;
+
+    fetch(SUPABASE_URL + '/rest/v1/rpc/oferta_publica', {
+      method: 'POST',
+      headers: {
+        'apikey': SUPABASE_ANON_KEY,
+        'Authorization': 'Bearer ' + SUPABASE_ANON_KEY,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ p_id: id })
+    }).then(function (r) { return r.ok ? r.json() : Promise.reject(r.status); })
+      .then(function (filas) {
+        document.getElementById('cargando').hidden = true;
+        var o = filas && filas[0];
+        if (!o) { mostrar('nosirve'); return; }
+
+        document.title = o.titulo + ' · ' + o.comercio + ' · Salvá';
+        texto('titulo', o.titulo);
+        texto('local', o.comercio + (o.direccion ? ' · ' + o.direccion : ''));
+        texto('precio', plata(o.precio));
+        if (Number(o.precio_original) > Number(o.precio)) texto('antes', plata(o.precio_original));
+        if (o.descuento > 0) { texto('descuento', o.descuento + '% OFF'); mostrar('descuento'); }
+        texto('retiro', ventana(o.retiro_desde, o.retiro_hasta));
+        texto('quedan', o.agotada
+          ? 'Por ahora no quedan. Con la app te avisamos si vuelve.'
+          : o.quedan === 1 ? 'Queda 1' : 'Quedan ' + o.quedan);
+        if (o.descripcion) { texto('descripcion', o.descripcion); mostrar('descripcion'); }
+        if (o.tipo === 'surprise_pack') mostrar('sorpresa');
+
+        // Sólo fotos de nuestro Storage: la URL viene de la base, pero una
+        // `img` con cualquier dirección es un rastreador servido desde acá.
+        // La de la oferta y, si no tiene, la del local.
+        var foto = o.foto || o.foto_del_comercio;
+        if (foto && foto.indexOf(SUPABASE_URL + '/storage/v1/object/public/') === 0) {
+          var img = document.getElementById('imagen');
+          img.alt = o.titulo;
+          img.onerror = function () { img.hidden = true; texto('rubro', o.rubro || 'Salvá'); mostrar('rubro'); };
+          img.src = foto;
+          img.hidden = false;
+        } else {
+          texto('rubro', o.rubro || 'Salvá');
+          mostrar('rubro');
+        }
+        mostrar('oferta');
+      })
+      .catch(function () {
+        document.getElementById('cargando').hidden = true;
+        mostrar('error');
+      });
   });
 </script>
 </head>
 <body>
 <main>
-  <h1 style="margin-top:56px">Te comparten una oferta</h1>
-  <div class="tarjeta">
-    <p style="margin-top:0"><strong>Salvá</strong> es comida que iba a tirarse,
-    a precio rebajado. Comercios de Tandil publican lo que les sobró al cierre;
-    vos lo reservás, lo pagás y lo retirás.</p>
-    <p><a id="abrir" hidden href="#">Abrir en la app</a></p>
-    <p style="color:var(--tinta-suave);font-size:14px;margin-bottom:0">
-      ¿Todavía no la tenés? Buscá <strong>Salvá</strong> en tu tienda de
-      aplicaciones.</p>
+  <a class="marca" href="index.html"><img src="icono.png" alt="">Salvá</a>
+
+  <div class="oferta" id="cargando" aria-busy="true">
+    <div class="foto"></div>
+    <div class="cuerpo">
+      <div class="esqueleto" style="width:70%"></div>
+      <div class="esqueleto" style="width:45%"></div>
+      <div class="esqueleto" style="width:30%;height:28px"></div>
+    </div>
   </div>
+
+  <article class="oferta" id="oferta" hidden>
+    <div class="foto">
+      <img id="imagen" hidden alt="">
+      <div class="rubro" id="rubro" hidden></div>
+      <span class="descuento" id="descuento" hidden></span>
+    </div>
+    <div class="cuerpo">
+      <h1 id="titulo"></h1>
+      <p class="local" id="local"></p>
+      <div class="precios">
+        <span class="precio" id="precio"></span>
+        <span class="antes" id="antes"></span>
+      </div>
+      <span class="retiro" id="retiro"></span>
+      <p class="quedan" id="quedan"></p>
+      <p class="descripcion" id="descripcion" hidden></p>
+      <p class="sorpresa" id="sorpresa" hidden>El contenido del pack lo define
+      el comercio según lo que le quede. La descripción es orientativa.</p>
+    </div>
+  </article>
+
+  <div class="tarjeta" id="nosirve" hidden>
+    <p style="margin-top:0"><strong>Esta oferta ya no está.</strong></p>
+    <p style="margin-bottom:0">Se agotó, terminó el horario de retiro o el
+    comercio la sacó. Los comercios publican más cerca del cierre: en la app
+    vas a ver las de hoy.</p>
+  </div>
+
+  <div class="tarjeta" id="error" hidden>
+    <p style="margin:0">No pudimos cargar la oferta. Revisá tu conexión y
+    volvé a abrir el link.</p>
+  </div>
+
+  <div class="botones">
+    <a class="boton lleno play" id="bajar" href="https://play.google.com/store/apps/details?id=com.oportia.salva">Descargar en Google Play</a>
+    <a class="boton borde" id="abrir" hidden href="#">Abrir en la app</a>
+  </div>
+  <p class="nota" id="ios" hidden>Salvá todavía no está en el App Store: por
+  ahora es sólo para Android. Podés ver la oferta acá y pasársela a alguien con
+  Android, o ir directo al local.</p>
+  <p class="nota"><strong>Salvá</strong> es comida que iba a tirarse, a precio
+  rebajado. Comercios de Tandil publican lo que les sobró al cierre; vos lo
+  reservás, lo pagás y lo retirás.</p>
 </main>
-<footer>Salvá · Tandil</footer>
+<footer>Salvá · Tandil · <a href="privacidad.html">Privacidad</a> · <a href="terminos.html">Términos</a></footer>
 </body>
 </html>
