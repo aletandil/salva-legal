@@ -4,59 +4,164 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex">
-<title>Volvé a Salvá</title>
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#06245E">
+<title>Salvá · Tu cuenta</title>
+<link rel="icon" href="img/logo-mail.png">
 <link rel="stylesheet" href="estilo.css">
-<script>
-  // Acá llegan los links de los emails de cuenta: confirmar el registro y
-  // recuperar la contraseña. Supabase redirige con un código de un solo uso, y
-  // lo único que hace esta página es pasárselo a la app, que es la que lo
-  // canjea por la sesión.
-  //
-  // Existe porque un link `salva://` directo en el email no sirve: Gmail no lo
-  // hace tocable, igual que pasaba con las ofertas compartidas. Una página
-  // https sí es un link normal, y desde acá se salta a la app.
-  //
-  // El código sólo funciona en el teléfono que pidió el email: la app guardó
-  // ahí la otra mitad de la clave. Por eso la página no intenta hacer nada más
-  // que abrir la app, y explica qué hacer si se abrió en una computadora.
-  (function () {
-    var p = new URLSearchParams(window.location.search);
-    var h = new URLSearchParams(window.location.hash.replace(/^#/, ''));
-    var error = p.get('error_description') || h.get('error_description');
-    window.__salvaError = error;
-    if (error) return;
-    var destino = 'salva://cuenta' + window.location.search + window.location.hash;
-    window.__salvaDestino = destino;
-    try { window.location.replace(destino); } catch (e) {}
-  })();
-</script>
+<style>
+  /* Los colores de la app (Azul Salvá), como oferta.html. */
+  :root {
+    --primario: #0868DB; --marino: #06245E; --sobre-primario: #fff;
+    --tinta: #0E1A33; --tinta-suave: #4D5A72; --fondo: #F6F9FD;
+    --papel: #FFFFFF; --borde: #DDE6F1; --alt: #EEF4FB; --ok: #1E7F4F;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --primario: #4AA3FF; --marino: #A9D4FF; --sobre-primario: #04122B;
+      --tinta: #E8EEF7; --tinta-suave: #A3B0C4; --fondo: #0A1328;
+      --papel: #111D36; --borde: #24324F; --alt: #182643; --ok: #45C08A;
+    }
+  }
+  body { background: var(--fondo); color: var(--tinta); }
+  main { max-width: 480px; }
+  .marca { display: flex; align-items: center; gap: 10px; margin: 24px 0 8px;
+           font-weight: 800; font-size: 20px; color: var(--tinta); text-decoration: none; }
+  .marca img { width: 36px; height: 36px; border-radius: 9px; }
+  .tarjeta { background: var(--papel); border: 1px solid var(--borde); border-radius: 20px;
+             padding: 24px 22px; box-shadow: 0 4px 16px rgba(14,26,51,.05); }
+  .sello { width: 56px; height: 56px; border-radius: 50%; display: grid; place-items: center;
+           background: var(--ok); color: #fff; font-size: 30px; font-weight: 800; margin: 0 0 12px; }
+  .sello.aviso { background: var(--alt); color: var(--tinta-suave); }
+  h1 { font-size: 24px; line-height: 1.25; margin: 0 0 8px; }
+  .botones { display: grid; gap: 10px; margin: 20px 0 4px; }
+  .boton { display: block; text-align: center; padding: 14px 16px; border-radius: 14px;
+           font-weight: 700; text-decoration: none; font-size: 16px; }
+  .boton.lleno { background: var(--primario); color: var(--sobre-primario); }
+  .boton.borde { border: 1px solid var(--borde); color: var(--primario); background: var(--papel); }
+  .nota { font-size: 14px; color: var(--tinta-suave); margin: 12px 0 0; }
+  [hidden] { display: none !important; }
+</style>
 </head>
 <body>
+<!--
+  Acá llegan los links de los emails de cuenta (confirmar el registro y
+  recuperar la contraseña), con el código de un solo uso que da Supabase.
+
+  Antes la página saltaba a `salva://` desde el <head>, antes de dibujar
+  nada. Si el navegador no seguía el salto (Chrome lo frena sin un toque, una
+  computadora no tiene la app) o la app tardaba en abrir, la pantalla quedaba
+  vacía; con el teléfono en modo oscuro, negra. Así lo vio el dueño al
+  confirmar su cuenta, como ya había pasado con oferta.html. Ahora el
+  contenido se dibuja primero y el salto es un intento después, con el
+  botón a mano.
+
+  La confirmación del alta ya pasó cuando se llega acá: Supabase marca el
+  email como confirmado al abrir el link, antes de redirigir. Por eso, en un
+  alta, la página puede decir "tu cuenta está confirmada" aunque la app no se
+  abra: con email y contraseña se entra igual. El código sólo hace falta para
+  entrar sin escribirlos, y sólo sirve en el teléfono que pidió el email.
+
+  `tipo` lo agrega la app al pedir el email (`?tipo=alta` o `?tipo=clave`).
+  Las versiones anteriores no lo mandan: sin él, el texto sirve para los dos.
+-->
 <main>
-  <h1 style="margin-top:56px" id="titulo">Abrí Salvá</h1>
-  <div class="tarjeta" id="ok">
-    <p style="margin-top:0">Si la app no se abrió sola, tocá el botón:</p>
-    <p><a id="abrir" href="salva://cuenta">Abrir Salvá</a></p>
-    <p style="color:var(--tinta-suave);font-size:14px;margin-bottom:0">
-      Este link funciona en el teléfono donde pediste el email. Si lo abriste en
-      una computadora, abrilo desde el email en tu teléfono.</p>
+  <a class="marca" href="https://salvaapp.com.ar/">
+    <img src="img/logo-mail.png" alt="" width="36" height="36">Salvá
+  </a>
+
+  <div class="tarjeta" id="alta" hidden>
+    <div class="sello" aria-hidden="true">&#10003;</div>
+    <h1>Listo, tu cuenta está confirmada</h1>
+    <p style="margin:0">Volvé a la app para empezar a ver las ofertas de los comercios de Tandil.</p>
+    <div class="botones">
+      <a class="boton lleno" data-abrir href="salva://cuenta">Abrir Salvá</a>
+    </div>
+    <p class="nota">¿No se abrió o estás en la computadora? No pasa nada: abrí Salvá en tu teléfono
+      y entrá con tu email y tu contraseña.</p>
   </div>
+
+  <div class="tarjeta" id="clave" hidden>
+    <h1>Volvé a Salvá para elegir tu contraseña</h1>
+    <p style="margin:0">Tocá el botón y la app te pide la contraseña nueva.</p>
+    <div class="botones">
+      <a class="boton lleno" data-abrir href="salva://cuenta">Abrir Salvá</a>
+    </div>
+    <p class="nota">Este link funciona en el teléfono donde pediste el email. Si lo abriste en una
+      computadora, abrilo desde el email en tu teléfono.</p>
+  </div>
+
+  <div class="tarjeta" id="general" hidden>
+    <div class="sello" aria-hidden="true">&#10003;</div>
+    <h1>Listo, volvé a Salvá</h1>
+    <p style="margin:0">Si estabas confirmando tu cuenta, ya quedó confirmada: entrá a la app con tu
+      email y tu contraseña. Si pediste cambiar la contraseña, abrí la app desde este teléfono.</p>
+    <div class="botones">
+      <a class="boton lleno" data-abrir href="salva://cuenta">Abrir Salvá</a>
+    </div>
+  </div>
+
   <div class="tarjeta" id="vencido" hidden>
-    <p style="margin-top:0">Este link ya no sirve: se usó o pasó demasiado
-    tiempo.</p>
-    <p style="margin-bottom:0">Pedí uno nuevo desde la app, en
-    <em>¿Olvidaste tu contraseña?</em></p>
+    <div class="sello aviso" aria-hidden="true">!</div>
+    <h1>Este link ya no sirve</h1>
+    <p style="margin:0">Se usó o pasó demasiado tiempo. Si ya habías confirmado tu cuenta, entrá a
+      la app con tu email y tu contraseña.</p>
+    <p class="nota">Si todavía no la confirmaste, pedí otro link desde la pantalla
+      <em>Revisá tu email</em> de la app. Para la contraseña, en <em>¿Olvidaste tu contraseña?</em></p>
+    <div class="botones">
+      <a class="boton borde" data-abrir href="salva://cuenta">Abrir Salvá</a>
+    </div>
   </div>
+
+  <div class="botones" id="bajar" hidden>
+    <a class="boton borde" href="https://play.google.com/store/apps/details?id=com.oportia.salva">¿No tenés la app? Bajala de Google Play</a>
+  </div>
+  <p class="nota">¿Algo no anduvo? Escribinos a
+    <a href="mailto:soporte@salvaapp.com.ar">soporte@salvaapp.com.ar</a>.</p>
 </main>
-<footer>Salvá · Tandil</footer>
+<footer>Salvá · Tandil · <a href="https://salvaapp.com.ar/">salvaapp.com.ar</a></footer>
 <script>
-  if (window.__salvaError) {
-    document.getElementById('titulo').textContent = 'El link venció';
-    document.getElementById('ok').hidden = true;
-    document.getElementById('vencido').hidden = false;
-  } else if (window.__salvaDestino) {
-    document.getElementById('abrir').href = window.__salvaDestino;
-  }
+  (function () {
+    var p = new URLSearchParams(location.search);
+    var h = new URLSearchParams(location.hash.replace(/^#/, ''));
+    var error = p.get('error_description') || h.get('error_description') ||
+                p.get('error') || h.get('error');
+    var tipo = p.get('tipo');
+    var android = /Android/i.test(navigator.userAgent);
+    var telefono = android || /iPhone|iPad|iPod/i.test(navigator.userAgent);
+
+    // Lo que la app necesita es lo que vino de Supabase, sin `tipo`.
+    var resto = new URLSearchParams(location.search);
+    resto.delete('tipo');
+    var consulta = resto.toString();
+    var camino = 'cuenta' + (consulta ? '?' + consulta : '') + location.hash;
+    // En Android, `intent:` abre la app si está y, si no, Play: un
+    // `salva://` sin la app no hace nada y deja a la persona mirando.
+    var destino = android
+      ? 'intent://' + camino + '#Intent;scheme=salva;package=com.oportia.salva;' +
+        'S.browser_fallback_url=' +
+        encodeURIComponent('https://play.google.com/store/apps/details?id=com.oportia.salva') + ';end'
+      : 'salva://' + camino;
+
+    var tarjeta = error ? 'vencido' : tipo === 'alta' ? 'alta' : tipo === 'clave' ? 'clave' : 'general';
+    document.getElementById(tarjeta).hidden = false;
+    document.getElementById('bajar').hidden = !telefono || android;
+    var botones = document.querySelectorAll('[data-abrir]');
+    for (var i = 0; i < botones.length; i++) {
+      botones[i].href = destino;
+      // En una computadora no hay app que abrir: el botón sólo confunde.
+      if (!telefono) botones[i].hidden = true;
+    }
+
+    // Un intento solo, después de que la página ya se ve, y nunca con un
+    // link vencido: ahí no hay código que llevar. Si el navegador lo frena,
+    // la página ya está a la vista con su botón.
+    if (!error && telefono) {
+      setTimeout(function () {
+        try { location.href = destino; } catch (e) {}
+      }, 700);
+    }
+  })();
 </script>
 </body>
 </html>
