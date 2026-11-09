@@ -192,7 +192,7 @@ a { color: var(--primario); text-underline-offset: 3px; }
 /* Los botones de las tiendas. El de Google es el badge oficial (PNG de
    Google, con su margen transparente: por eso mide 56 para verse de 44). */
 .tienda { display: inline-flex; border-radius: 10px; }
-.tienda-play img { height: 56px; width: auto; margin: -6px -6px; }
+.tienda-play img { height: 56px; width: auto; max-width: none; margin: -6px -6px; }
 .tienda-ios {
   height: 44px; padding: 0 16px 0 14px; gap: 10px; align-items: center;
   background: #000; color: #fff; border: 1px solid #A6A6A6; border-radius: 9px;
@@ -525,6 +525,15 @@ details p { margin: 0; padding: 0 18px 18px; color: var(--tinta-media); font-siz
   }
   .js [data-entrada].visible { opacity: 1; transform: none; }
 
+  /* El hero no espera al JS ni al observador: entra con la primera pintura.
+     Esperar al script diferido corría medio segundo la pintura más grande
+     (el texto de la bajada), y es lo primero que mira cualquiera. */
+  .js .hero-texto [data-entrada], .js .telefono[data-entrada] {
+    opacity: 1; transform: none; transition: none;
+    animation: entrar .6s cubic-bezier(.2, .7, .2, 1) both;
+    animation-delay: calc(var(--i, 0) * 80ms);
+  }
+
   /* El sol del logo se enciende: el rombo sube, los rayos crecen del medio
      hacia afuera, florece el halo y sale un solo anillo. Una vez, sin rebote. */
   .sol .rombo { animation: subir .55s .1s cubic-bezier(.2, .7, .2, 1) both; transform-box: fill-box; transform-origin: center; }
@@ -549,6 +558,7 @@ details p { margin: 0; padding: 0 18px 18px; color: var(--tinta-media); font-siz
 @keyframes rayo { from { opacity: 0; transform: scale(.01); } to { opacity: 1; transform: none; } }
 @keyframes halo { 0% { opacity: 0; transform: scale(.5); } 45% { opacity: 1; transform: scale(1.12); } 100% { opacity: .7; transform: scale(1); } }
 @keyframes anillo { 0% { opacity: .7; transform: scale(.7); } 100% { opacity: 0; transform: scale(1.9); } }
+@keyframes entrar { from { opacity: 0; transform: translateY(22px); } to { opacity: 1; transform: none; } }
 @keyframes flotar { from { translate: 0 0; } to { translate: 0 -8px; } }
 
 .sol-envoltorio { position: relative; display: inline-grid; place-items: center; }
