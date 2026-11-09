@@ -1,0 +1,8 @@
+# Las páginas que abre la app (cuenta, volver, vinculado, retiro, equipo)
+# llevan <meta name="robots" content="noindex">. No se bloquean acá a
+# propósito: si el robot no puede entrar, no ve el noindex y la URL puede
+# aparecer igual en los resultados, sin descripción.
+User-agent: *
+Allow: /
+
+Sitemap: https://salvaapp.com.ar/sitemap.xml

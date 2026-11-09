@@ -43,14 +43,38 @@
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
-  "@type": "MobileApplication",
-  "name": "Salvá",
-  "operatingSystem": "Android",
-  "applicationCategory": "ShoppingApplication",
-  "description": "Ofertas de lo que a los comercios les sobró o está por vencer, a precio rebajado. Se reservan en la app y se retiran en el local.",
-  "url": "https://salvaapp.com.ar/",
-  "installUrl": "https://play.google.com/store/apps/details?id=com.oportia.salva",
-  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "ARS" }
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://salvaapp.com.ar/#organizacion",
+      "name": "Salvá",
+      "url": "https://salvaapp.com.ar/",
+      "logo": "https://salvaapp.com.ar/icono.png",
+      "slogan": "Dale otra oportunidad.",
+      "email": "soporte@salvaapp.com.ar",
+      "areaServed": "AR",
+      "sameAs": ["https://play.google.com/store/apps/details?id=com.oportia.salva"],
+      "contactPoint": {
+        "@type": "ContactPoint",
+        "contactType": "customer support",
+        "email": "soporte@salvaapp.com.ar",
+        "availableLanguage": "es"
+      }
+    },
+    {
+      "@type": "MobileApplication",
+      "name": "Salvá",
+      "operatingSystem": "Android",
+      "applicationCategory": "ShoppingApplication",
+      "description": "Ofertas de lo que a los comercios les sobró o está por vencer, a precio rebajado. Se reservan en la app y se retiran en el local.",
+      "url": "https://salvaapp.com.ar/",
+      "installUrl": "https://play.google.com/store/apps/details?id=com.oportia.salva",
+      "downloadUrl": "https://play.google.com/store/apps/details?id=com.oportia.salva",
+      "inLanguage": "es-AR",
+      "publisher": { "@id": "https://salvaapp.com.ar/#organizacion" },
+      "offers": { "@type": "Offer", "price": "0", "priceCurrency": "ARS" }
+    }
+  ]
 }
 </script>
 </head>
