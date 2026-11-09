@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="es-AR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Esta página no está · Salvá</title>
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#F6F9FD" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0A1328" media="(prefers-color-scheme: dark)">
+<!-- GitHub Pages sirve este archivo para cualquier dirección que no existe,
+     a cualquier profundidad (/oferta/123/algo): por eso todas las rutas son
+     absolutas. -->
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/portada.css">
+<style>
+  .perdida { position: relative; isolation: isolate; min-height: calc(100vh - 64px); min-height: calc(100svh - 64px); display: grid; place-items: center; padding: 48px 0 72px; text-align: center; }
+  .perdida .contenedor { max-width: 620px; }
+  .perdida .marca-tile { --t: 88px; margin-bottom: 28px; }
+  .perdida h1 { font-size: clamp(34px, 6vw, 52px); line-height: 1.05; letter-spacing: -.035em; margin: 10px 0 14px; }
+  .perdida .bajada { margin-inline: auto; }
+  .perdida .acciones { display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; align-items: center; }
+  .perdida .boton-suave { background: var(--papel); color: var(--tinta); box-shadow: inset 0 0 0 1px var(--borde); }
+  .perdida .boton-suave:hover { filter: none; background: var(--papel-alt); box-shadow: inset 0 0 0 1px var(--borde); }
+  .cabecera .boton { margin-left: auto; }
+  .perdida .ayuda { margin: 28px 0 0; color: var(--tinta-tenue); font-size: 15px; }
+</style>
+</head>
+<body>
+<a class="saltar" href="#contenido">Saltar al contenido</a>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <defs>
+    <linearGradient id="g-rayo" gradientUnits="userSpaceOnUse" x1="0" y1="4" x2="0" y2="28"><stop offset="0" stop-color="#2BD3F6"/><stop offset="1" stop-color="#0A7BF5"/></linearGradient>
+    <linearGradient id="g-rombo" x1="0.8" y1="0" x2="0.2" y2="1"><stop offset="0" stop-color="#2BD8F6"/><stop offset="1" stop-color="#0A7DF5"/></linearGradient>
+    <linearGradient id="g-cuenco" x1="0.1" y1="0.1" x2="0.45" y2="1"><stop offset="0" stop-color="#18C8F7"/><stop offset="0.55" stop-color="#0B78F5"/><stop offset="1" stop-color="#0739DA"/></linearGradient>
+    <linearGradient id="g-medio" x1="0.9" y1="0.2" x2="0.2" y2="1"><stop offset="0" stop-color="#0897F7"/><stop offset="1" stop-color="#0A5AF0"/></linearGradient>
+    <linearGradient id="g-hoja" x1="0" y1="1" x2="1" y2="0"><stop offset="0" stop-color="#18D0F5"/><stop offset="1" stop-color="#6AEEF8"/></linearGradient>
+    <clipPath id="c-forma"><path d="M7,46 C22,46 38,54 49.6,65.4 Q53,69.4 56.4,65.4 C68.5,55 81,46 96,45 C97.6,45 98.2,46.6 97.9,48.4 C96,76 76,97 51,97 C26,97 6.5,77 5.4,49 C5.3,47.2 5.9,46 7,46 Z"/></clipPath>
+  </defs>
+  <symbol id="simbolo" viewBox="0 0 100 100">
+    <g stroke="url(#g-rayo)" stroke-width="8" stroke-linecap="round" fill="none"><path d="M50,7.5 V17"/><path d="M28.5,18.5 L34.5,24.5"/><path d="M71.5,18.5 L65.5,24.5"/></g>
+    <rect x="36" y="29" width="28" height="28" rx="6.5" fill="url(#g-rombo)" transform="rotate(45 50 43)"/>
+    <g clip-path="url(#c-forma)"><rect x="0" y="40" width="100" height="60" fill="url(#g-cuenco)"/><path d="M53,68 C45,77 37,87 29,97 L100,100 L100,40 Z" fill="url(#g-medio)"/><path d="M53,68 C63,74 79,75 100,66 L100,40 L53,40 Z" fill="url(#g-hoja)"/></g>
+  </symbol>
+</svg>
+
+<header class="cabecera">
+  <div class="contenedor">
+    <a class="lockup" href="/" aria-label="Salvá, inicio">
+      <span class="marca-tile" style="--t:34px"><svg viewBox="0 0 100 100" aria-hidden="true"><use href="#simbolo" width="100" height="100"/></svg></span>
+      Salvá
+    </a>
+    <a class="boton" href="/#bajar">Bajar la app</a>
+  </div>
+</header>
+
+<main id="contenido" class="perdida">
+  <div class="fondo-abstracto" aria-hidden="true">
+    <svg viewBox="0 0 720 720"><circle cx="360" cy="360" r="200" stroke-width="1.5"/><circle cx="360" cy="360" r="270" stroke-width="1.2"/><circle cx="360" cy="360" r="340" stroke-width="1"/></svg>
+  </div>
+  <div class="contenedor">
+    <span class="sol-envoltorio">
+      <span class="sol-halo" aria-hidden="true"></span>
+      <span class="sol-anillo" aria-hidden="true"></span>
+      <span class="marca-tile">
+        <svg class="sol" viewBox="0 0 100 100" aria-hidden="true">
+          <g stroke="url(#g-rayo)" stroke-width="8" stroke-linecap="round" fill="none">
+            <path class="rayo r1" d="M50,17 V7.5"/>
+            <path class="rayo r2" d="M34.5,24.5 L28.5,18.5"/>
+            <path class="rayo r3" d="M65.5,24.5 L71.5,18.5"/>
+          </g>
+          <rect class="rombo" x="36" y="29" width="28" height="28" rx="6.5" fill="url(#g-rombo)" transform="rotate(45 50 43)"/>
+          <g clip-path="url(#c-forma)"><rect x="0" y="40" width="100" height="60" fill="url(#g-cuenco)"/><path d="M53,68 C45,77 37,87 29,97 L100,100 L100,40 Z" fill="url(#g-medio)"/><path d="M53,68 C63,74 79,75 100,66 L100,40 L53,40 Z" fill="url(#g-hoja)"/></g>
+        </svg>
+      </span>
+    </span>
+    <p class="sobretitulo">Error 404</p>
+    <h1>Esta página no está</h1>
+    <p class="bajada">Puede que el link haya llegado cortado, o que lo que buscabas ya no exista: las ofertas duran unas horas y después se van. Lo de hoy está en la app.</p>
+    <div class="acciones">
+      <a class="boton" href="/">Ir al inicio</a>
+      <a class="boton boton-suave" href="https://play.google.com/store/apps/details?id=com.oportia.salva">Ver las ofertas en la app</a>
+    </div>
+    <p class="ayuda">¿Te mandaron este link y no anda? Escribinos a <a href="mailto:soporte@salvaapp.com.ar">soporte@salvaapp.com.ar</a>.</p>
+  </div>
+</main>
+</body>
+</html>
