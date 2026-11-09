@@ -1,32 +1,434 @@
 <!doctype html>
-<html lang="es">
+<html lang="es-AR">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Salvá — Información legal</title>
-<link rel="stylesheet" href="estilo.css">
+<title>Salvá · Dale otra oportunidad</title>
+<meta name="description" content="Lo que a un comercio le sobró o está por vencer, a precio rebajado y cerca tuyo. Reservalo en la app, pagalo online o en el local y retiralo con tu QR.">
+<link rel="canonical" href="https://salvaapp.com.ar/">
+<meta name="theme-color" content="#F6F9FD" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0A1328" media="(prefers-color-scheme: dark)">
+
+<meta property="og:site_name" content="Salvá">
+<meta property="og:locale" content="es_AR">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://salvaapp.com.ar/">
+<meta property="og:title" content="Salvá · Dale otra oportunidad">
+<meta property="og:description" content="Lo que a un comercio le sobró o está por vencer, a precio rebajado y cerca tuyo. Reservalo, pagalo y retiralo con tu QR.">
+<meta property="og:image" content="https://salvaapp.com.ar/img/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Salvá. Dale otra oportunidad.">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Salvá · Dale otra oportunidad">
+<meta name="twitter:description" content="Lo que a un comercio le sobró o está por vencer, a precio rebajado y cerca tuyo.">
+<meta name="twitter:image" content="https://salvaapp.com.ar/img/og.png">
+
+<link rel="icon" href="favicon.ico" sizes="any">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="preload" href="fuentes/plus-jakarta-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="portada.css">
+<script>
+  // Antes de pintar: con JS, lo que entra al hacer scroll arranca escondido.
+  // Sin JS no se esconde nada.
+  document.documentElement.classList.add('js');
+
+  // La dirección de Salvá en el App Store. Vacía mientras la app de iPhone
+  // no esté publicada: los botones dicen "Próximamente" y no llevan a
+  // ningún lado. El día que exista, se pega acá y se activan todos solos.
+  window.SALVA_APP_STORE = '';
+</script>
+<script src="portada.js" defer></script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "MobileApplication",
+  "name": "Salvá",
+  "operatingSystem": "Android",
+  "applicationCategory": "ShoppingApplication",
+  "description": "Ofertas de lo que a los comercios les sobró o está por vencer, a precio rebajado. Se reservan en la app y se retiran en el local.",
+  "url": "https://salvaapp.com.ar/",
+  "installUrl": "https://play.google.com/store/apps/details?id=com.oportia.salva",
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "ARS" }
+}
+</script>
 </head>
 <body>
-<header><a class="marca" href="./"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" aria-hidden="true"><path d="M300 400 H724 L690 760 a62 62 0 0 1 -62 56 H396 a62 62 0 0 1 -62 -56 Z" fill="#0D5EAF"/><path d="M410 400 v-56 a102 102 0 0 1 204 0 v56" fill="none" stroke="#0D5EAF" stroke-width="52" stroke-linecap="round"/><path d="M512 700 C512 600 560 540 660 520 C660 620 606 690 512 700 Z" fill="#D07A0E"/></svg> Salvá</a></header>
-<main>
-  <h1>Información legal</h1>
-  <p class="fecha">Salvá — lo que iba a tirarse, a precio rebajado. Argentina.</p>
+<a class="saltar" href="#contenido">Saltar al contenido</a>
 
-  <div class="tarjeta">
-    <h2 style="margin-top:0"><a href="terminos.html">Términos y condiciones</a></h2>
-    <p>Cómo funciona una compra, qué pasa si cancelás y qué se devuelve.</p>
-  </div>
+<!-- Íconos (los de Material, como en la app) y el símbolo de la marca. -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <defs>
+    <linearGradient id="g-rayo" gradientUnits="userSpaceOnUse" x1="0" y1="4" x2="0" y2="28"><stop offset="0" stop-color="#2BD3F6"/><stop offset="1" stop-color="#0A7BF5"/></linearGradient>
+    <linearGradient id="g-rombo" x1="0.8" y1="0" x2="0.2" y2="1"><stop offset="0" stop-color="#2BD8F6"/><stop offset="1" stop-color="#0A7DF5"/></linearGradient>
+    <linearGradient id="g-cuenco" x1="0.1" y1="0.1" x2="0.45" y2="1"><stop offset="0" stop-color="#18C8F7"/><stop offset="0.55" stop-color="#0B78F5"/><stop offset="1" stop-color="#0739DA"/></linearGradient>
+    <linearGradient id="g-medio" x1="0.9" y1="0.2" x2="0.2" y2="1"><stop offset="0" stop-color="#0897F7"/><stop offset="1" stop-color="#0A5AF0"/></linearGradient>
+    <linearGradient id="g-hoja" x1="0" y1="1" x2="1" y2="0"><stop offset="0" stop-color="#18D0F5"/><stop offset="1" stop-color="#6AEEF8"/></linearGradient>
+    <clipPath id="c-forma"><path d="M7,46 C22,46 38,54 49.6,65.4 Q53,69.4 56.4,65.4 C68.5,55 81,46 96,45 C97.6,45 98.2,46.6 97.9,48.4 C96,76 76,97 51,97 C26,97 6.5,77 5.4,49 C5.3,47.2 5.9,46 7,46 Z"/></clipPath>
+  </defs>
+  <symbol id="simbolo" viewBox="0 0 100 100">
+    <g stroke="url(#g-rayo)" stroke-width="8" stroke-linecap="round" fill="none"><path d="M50,7.5 V17"/><path d="M28.5,18.5 L34.5,24.5"/><path d="M71.5,18.5 L65.5,24.5"/></g>
+    <rect x="36" y="29" width="28" height="28" rx="6.5" fill="url(#g-rombo)" transform="rotate(45 50 43)"/>
+    <g clip-path="url(#c-forma)"><rect x="0" y="40" width="100" height="60" fill="url(#g-cuenco)"/><path d="M53,68 C45,77 37,87 29,97 L100,100 L100,40 Z" fill="url(#g-medio)"/><path d="M53,68 C63,74 79,75 100,66 L100,40 L53,40 Z" fill="url(#g-hoja)"/></g>
+  </symbol>
+  <symbol id="i-reloj" viewBox="0 0 24 24"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/></symbol>
+  <symbol id="i-corazon" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.860-8.55 11.54L12 21.35z"/></symbol>
+  <symbol id="i-local" viewBox="0 0 24 24"><path d="M20 4H4v2h16V4zm1 10v-2l-1-5H4l-1 5v2h1v6h10v-6h4v6h2v-6h1zm-9 4H6v-4h6v4z"/></symbol>
+  <symbol id="i-ticket" viewBox="0 0 24 24"><path d="M22 10V6c0-1.11-.9-2-2-2H4c-1.1 0-1.99.89-1.99 2v4c1.1 0 1.99.9 1.99 2s-.89 2-2 2v4c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2v-4c-1.1 0-2-.9-2-2s.9-2 2-2zm-9 7.5h-2v-2h2v2zm0-4.5h-2v-2h2v2zm0-4.5h-2v-2h2v2z"/></symbol>
+  <symbol id="i-persona" viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.670 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></symbol>
+  <symbol id="i-buscar" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27A6.47 6.47 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></symbol>
+  <symbol id="i-cerca" viewBox="0 0 24 24"><path d="M21 3L3 10.53v.98l6.84 2.65L12.48 21h.98L21 3z"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></symbol>
+  <symbol id="i-qr" viewBox="0 0 24 24"><path d="M3 11h8V3H3v8zm2-6h4v4H5V5zM3 21h8v-8H3v8zm2-6h4v4H5v-4zM13 3v8h8V3h-8zm6 6h-4V5h4v4zM13 13h2v2h-2zM15 15h2v2h-2zM13 17h2v2h-2zM17 17h2v2h-2zM19 19h2v2h-2zM15 19h2v2h-2zM17 13h2v2h-2zM19 15h2v2h-2z"/></symbol>
+  <symbol id="i-hoja" viewBox="0 0 24 24"><path d="M6.05 8.05a7.007 7.007 0 0 0-.02 9.88c1.47-3.4 4.09-6.24 7.36-7.93A15.952 15.952 0 0 0 8.03 16C12.930 20.4 18.69 17.54 20 4c-12.12.97-14 3.95-13.95 4.05z"/></symbol>
+  <symbol id="i-ahorro" viewBox="0 0 24 24"><path d="M19.83 7.5l-2.27-2.27c.07-.42.18-.81.32-1.15A1.498 1.498 0 0 0 16.5 2c-1.64 0-3.09.79-4 2h-5C4.46 4 2 6.46 2 9.5S4.5 21 4.5 21H10v-2h2v2h5.5l1.68-5.59 2.82-.94V7.5h-2.17zM13 9H8V7h5v2zm3 2c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1z"/></symbol>
+  <symbol id="i-sube" viewBox="0 0 24 24"><path d="M16 6l2.29 2.29-4.88 4.88-4-4L2 16.59 3.41 18l6-6 4 4 6.3-6.29L22 12V6z"/></symbol>
+  <symbol id="i-regalo" viewBox="0 0 24 24"><path d="M20 6h-2.18c.11-.31.18-.65.18-1a2.996 2.996 0 0 0-5.5-1.65l-.5.67-.5-.68C10.96 2.54 10.05 2 9 2 7.34 2 6 3.34 6 5c0 .35.07.69.18 1H4c-1.11 0-1.99.89-1.99 2L2 19c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2zm-5-2c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zM9 4c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zm11 15H4v-2h16v2zm0-5H4V8h5.08L7 10.83 8.62 12 11 8.76l1-1.36 1 1.36L15.38 12 17 10.83 14.92 8H20v6z"/></symbol>
+  <symbol id="i-escudo" viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-2 16l-4-4 1.41-1.41L10 14.17l6.59-6.59L18 9l-8 8z"/></symbol>
+  <symbol id="i-telefono" viewBox="0 0 24 24"><path d="M17 1.01L7 1c-1.1 0-2 .9-2 2v18c0 1.1.9 2 2 2h10c1.1 0 2-.9 2-2V3c0-1.1-.9-1.99-2-1.99zM17 19H7V5h10v14z"/></symbol>
+</svg>
 
-  <div class="tarjeta">
-    <h2 style="margin-top:0"><a href="privacidad.html">Política de privacidad</a></h2>
-    <p>Qué datos usa la app, para qué, con quién se comparten y cuánto tiempo se guardan.</p>
+<header class="cabecera" id="cabecera">
+  <div class="contenedor">
+    <a class="lockup" href="./" aria-label="Salvá, inicio">
+      <span class="marca-tile" style="--t:34px"><svg viewBox="0 0 100 100" aria-hidden="true"><use href="#simbolo" width="100" height="100"/></svg></span>
+      Salvá
+    </a>
+    <nav class="menu" aria-label="Secciones">
+      <a href="#como-funciona">Cómo funciona</a>
+      <a href="#que-encontras">Qué encontrás</a>
+      <a href="#comercios">Para comercios</a>
+      <a href="#preguntas">Preguntas</a>
+    </nav>
+    <a class="boton" href="#bajar">Bajar la app</a>
   </div>
+</header>
 
-  <div class="tarjeta">
-    <h2 style="margin-top:0"><a href="eliminar-cuenta.html">Eliminar tu cuenta</a></h2>
-    <p>Cómo borrar tu cuenta y tus datos, desde la app o escribiéndonos.</p>
-  </div>
+<main id="contenido">
+
+  <!-- ===== Hero ===== -->
+  <section class="hero" aria-labelledby="titulo-hero">
+    <div class="fondo-abstracto" aria-hidden="true">
+      <svg viewBox="0 0 720 720"><circle cx="360" cy="360" r="200" stroke-width="1.5"/><circle cx="360" cy="360" r="270" stroke-width="1.2"/><circle cx="360" cy="360" r="340" stroke-width="1"/></svg>
+    </div>
+    <div class="contenedor">
+      <div class="hero-texto">
+        <div class="hero-marca" data-entrada style="--i:0">
+          <span class="sol-envoltorio">
+            <span class="sol-halo" aria-hidden="true"></span>
+            <span class="sol-anillo" aria-hidden="true"></span>
+            <span class="marca-tile" style="--t:64px">
+              <svg class="sol" viewBox="0 0 100 100" role="img" aria-label="Logo de Salvá">
+                <g stroke="url(#g-rayo)" stroke-width="8" stroke-linecap="round" fill="none">
+                  <path class="rayo r1" d="M50,17 V7.5"/>
+                  <path class="rayo r2" d="M34.5,24.5 L28.5,18.5"/>
+                  <path class="rayo r3" d="M65.5,24.5 L71.5,18.5"/>
+                </g>
+                <rect class="rombo" x="36" y="29" width="28" height="28" rx="6.5" fill="url(#g-rombo)" transform="rotate(45 50 43)"/>
+                <g clip-path="url(#c-forma)"><rect x="0" y="40" width="100" height="60" fill="url(#g-cuenco)"/><path d="M53,68 C45,77 37,87 29,97 L100,100 L100,40 Z" fill="url(#g-medio)"/><path d="M53,68 C63,74 79,75 100,66 L100,40 L53,40 Z" fill="url(#g-hoja)"/></g>
+              </svg>
+            </span>
+          </span>
+          <span class="nombre">Salvá</span>
+        </div>
+        <p class="etiqueta" data-entrada style="--i:1">Ofertas de último momento, cerca tuyo</p>
+        <h1 id="titulo-hero" data-entrada style="--i:2">Dale otra <span class="destacado">oportunidad.</span></h1>
+        <p class="bajada" data-entrada style="--i:3">Lo que a un comercio le sobró o está por vencer —del pan del día a una crema con fecha—, a precio rebajado. Lo reservás en la app, lo pagás y pasás a retirarlo.</p>
+        <div class="tiendas" id="bajar" data-entrada style="--i:4">
+          <a class="tienda tienda-play" href="https://play.google.com/store/apps/details?id=com.oportia.salva">
+            <img src="img/google-play-es.png" width="646" height="250" alt="Disponible en Google Play">
+          </a>
+          <span class="tienda tienda-ios" data-app-store aria-disabled="true">
+            <svg class="icono" aria-hidden="true"><use href="#i-telefono"/></svg>
+            <span><small>Próximamente en</small><b>App Store</b></span>
+          </span>
+        </div>
+        <p class="nota-tiendas" data-entrada style="--i:5">Bajarla es gratis. Ya está para Android; para iPhone, muy pronto.</p>
+      </div>
+
+      <div class="escena" role="img" aria-label="La app de Salvá: ofertas cerca tuyo, como unas facturas del día a mitad de precio en una panadería, con el horario de retiro y cuántas quedan.">
+        <div class="halo-escena" aria-hidden="true"></div>
+        <div class="telefono" aria-hidden="true" data-entrada style="--i:2">
+          <div class="pantalla">
+            <div class="barra-estado"><span>18:42</span><span><i></i><i></i></span></div>
+            <div class="app-barra">
+              <span class="marca-tile"><svg viewBox="0 0 100 100"><use href="#simbolo" width="100" height="100"/></svg></span>
+              <strong>Salvá</strong>
+              <span class="ubicacion"><svg class="icono"><use href="#i-cerca"/></svg>Cerca tuyo</span>
+            </div>
+            <div class="buscador"><svg class="icono"><use href="#i-buscar"/></svg>Buscar una oferta o un comercio</div>
+            <div class="chips">
+              <span class="chip activo"><img src="img/rubros/bakery.webp" width="160" height="160" alt="">Panadería</span>
+              <span class="chip"><img src="img/rubros/greengrocer.webp" width="160" height="160" alt="">Verdulería</span>
+              <span class="chip"><img src="img/rubros/perfumery.webp" width="160" height="160" alt="">Perfumería</span>
+            </div>
+            <div class="feed">
+              <div class="oferta" data-tachar>
+                <div class="foto">
+                  <img src="img/fotos/facturas.webp" width="560" height="320" alt="" fetchpriority="high">
+                  <span class="pildora">50% OFF</span>
+                  <span class="corazon"><svg class="icono"><use href="#i-corazon"/></svg></span>
+                </div>
+                <div class="datos">
+                  <div class="local"><svg class="icono"><use href="#i-local"/></svg>Panadería La Espiga · a 4 cuadras</div>
+                  <div class="titulo">Facturas del día</div>
+                  <div class="horario"><svg class="icono"><use href="#i-reloj"/></svg>Hoy de 18:00 a 20:30</div>
+                  <div class="pie"><span class="precio nuevo">$&nbsp;1.800</span><span class="antes">$&nbsp;3.600</span><span class="quedan">Quedan 2</span></div>
+                </div>
+              </div>
+              <div class="oferta">
+                <div class="foto">
+                  <img src="img/fotos/verduras.webp" width="560" height="320" alt="">
+                  <span class="pildora">40% OFF</span>
+                </div>
+                <div class="datos">
+                  <div class="local"><svg class="icono"><use href="#i-local"/></svg>Verdulería La Huerta · a 6 cuadras</div>
+                  <div class="titulo">Tomate redondo, por kilo</div>
+                  <div class="horario"><svg class="icono"><use href="#i-reloj"/></svg>Hoy de 19:00 a 21:00</div>
+                  <div class="pie"><span class="precio">$&nbsp;900/kg</span><span class="antes">$&nbsp;1.500</span></div>
+                </div>
+              </div>
+            </div>
+            <div class="nav-app">
+              <span class="activo"><svg class="icono"><use href="#i-local"/></svg>Ofertas</span>
+              <span><svg class="icono"><use href="#i-corazon"/></svg>Favoritos</span>
+              <span><svg class="icono"><use href="#i-ticket"/></svg>Reservas</span>
+              <span><svg class="icono"><use href="#i-persona"/></svg>Perfil</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="flotante f-aviso" aria-hidden="true" data-entrada style="--i:5">
+          <span class="marca-tile"><svg viewBox="0 0 100 100"><use href="#simbolo" width="100" height="100"/></svg></span>
+          <span><span class="tenue">Salvá · ahora</span><strong>La Espiga publicó una oferta</strong><span class="tenue">Facturas del día · −50%</span></span>
+        </div>
+        <div class="flotante f-crema" aria-hidden="true" data-entrada style="--i:6" data-tachar>
+          <img src="img/rubros/perfumery.webp" width="160" height="160" alt="">
+          <span><span class="tenue">Perfumería</span><strong>Crema facial</strong><span class="precio nuevo">$&nbsp;3.200</span> <span class="antes">$&nbsp;6.400</span></span>
+        </div>
+        <div class="flotante f-ticket" aria-hidden="true" data-entrada style="--i:7">
+          <svg class="qr"><use href="#i-qr"/></svg>
+          <span><span class="tenue">Tu código</span><span class="codigo">K7Q4</span></span>
+          <span class="ok"><svg class="icono"><use href="#i-check"/></svg></span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== Cómo funciona ===== -->
+  <section class="seccion" id="como-funciona" aria-labelledby="titulo-como">
+    <div class="contenedor">
+      <div class="encabezado" data-entrada>
+        <p class="sobretitulo">Cómo funciona</p>
+        <h2 id="titulo-como">Ves, reservás, pagás y retirás</h2>
+        <p>Sin vueltas: en la app está todo lo que publicaron hoy los comercios cerca tuyo.</p>
+      </div>
+      <ol class="pasos">
+        <li class="paso" data-entrada style="--i:0">
+          <figure><img src="img/app/paso-cerca.webp" width="720" height="827" loading="lazy" decoding="async" alt="El mapa de Salvá con comercios cerca y una panadería a cuatro cuadras."></figure>
+          <div class="texto"><span class="numero">1</span><h3>Mirá qué hay cerca</h3><p>Panaderías, almacenes, verdulerías por kilo, perfumerías. En la lista o en el mapa ves qué publicaron hoy y a cuántas cuadras te queda.</p></div>
+        </li>
+        <li class="paso" data-entrada style="--i:1">
+          <figure><img src="img/app/paso-ofertas.webp" width="720" height="827" loading="lazy" decoding="async" alt="Tarjetas de ofertas: facturas del día a mitad de precio, una crema facial y tomate por kilo."></figure>
+          <div class="texto"><span class="numero">2</span><h3>Reservá lo que querés</h3><p>Elegís cuántas y reservás. Mientras pagás, queda apartado para vos.</p></div>
+        </li>
+        <li class="paso" data-entrada style="--i:2">
+          <figure><img src="img/app/paso-reserva.webp" width="720" height="827" loading="lazy" decoding="async" alt="La reserva con dos formas de pago: online con Mercado Pago o en el local."></figure>
+          <div class="texto"><span class="numero">3</span><h3>Pagá online o en el local</h3><p>Con Mercado Pago desde la app o, si el local lo acepta, cuando lo retirás.</p></div>
+        </li>
+        <li class="paso" data-entrada style="--i:3">
+          <figure><img src="img/app/paso-qr.webp" width="720" height="827" loading="lazy" decoding="async" alt="El código de retiro con su QR y el horario: hoy de 18:00 a 20:30."></figure>
+          <div class="texto"><span class="numero">4</span><h3>Retirá con tu QR</h3><p>Te queda un código y un QR. Lo mostrás en el local dentro del horario de retiro, y listo.</p></div>
+        </li>
+      </ol>
+    </div>
+  </section>
+
+  <!-- ===== Qué encontrás ===== -->
+  <section class="seccion alt" id="que-encontras" aria-labelledby="titulo-encontras">
+    <div class="contenedor">
+      <div class="encabezado" data-entrada>
+        <p class="sobretitulo">Qué encontrás</p>
+        <h2 id="titulo-encontras">De todo, cerca tuyo</h2>
+        <p>Lo que tiene fecha o hay que rotar, en buen estado. Del pan del día a un shampoo, una docena de huevos o un ramo de flores.</p>
+      </div>
+      <div class="encontras">
+        <ul class="rubros" aria-label="Rubros">
+          <li data-entrada style="--i:0"><img src="img/rubros/bakery.webp" width="160" height="160" alt="">Panadería</li>
+          <li data-entrada style="--i:1"><img src="img/rubros/greengrocer.webp" width="160" height="160" alt="">Verdulería</li>
+          <li data-entrada style="--i:2"><img src="img/rubros/grocery.webp" width="160" height="160" alt="">Almacén</li>
+          <li data-entrada style="--i:3"><img src="img/rubros/dairy.webp" width="160" height="160" alt="">Lácteos y quesería</li>
+          <li data-entrada style="--i:4"><img src="img/rubros/perfumery.webp" width="160" height="160" alt="">Perfumería</li>
+          <li data-entrada style="--i:5"><img src="img/rubros/cleaning.webp" width="160" height="160" alt="">Artículos de limpieza</li>
+          <li data-entrada style="--i:6"><img src="img/rubros/pastry.webp" width="160" height="160" alt="">Pastelería</li>
+          <li data-entrada style="--i:7"><img src="img/rubros/petshop.webp" width="160" height="160" alt="">Pet shop</li>
+          <li data-entrada style="--i:8"><img src="img/rubros/florist.webp" width="160" height="160" alt="">Florería</li>
+          <li data-entrada style="--i:9"><img src="img/rubros/cafe.webp" width="160" height="160" alt="">Cafetería</li>
+          <li data-entrada style="--i:10"><img src="img/rubros/drinks.webp" width="160" height="160" alt="">Vinoteca y bebidas</li>
+          <li data-entrada style="--i:11"><img src="img/rubros/rotisserie.webp" width="160" height="160" alt="">Rotisería</li>
+          <li data-entrada style="--i:12"><img src="img/rubros/healthfood.webp" width="160" height="160" alt="">Dietética</li>
+          <li data-entrada style="--i:13"><img src="img/rubros/pasta.webp" width="160" height="160" alt="">Fábrica de pastas</li>
+          <li data-entrada style="--i:14"><img src="img/rubros/kiosk.webp" width="160" height="160" alt="">Kiosco</li>
+          <li data-entrada style="--i:15"><img src="img/rubros/frozen.webp" width="160" height="160" alt="">Congelados</li>
+        </ul>
+        <div class="aviso" data-entrada style="--i:2">
+          <div class="fila">
+            <span class="burbuja ambar"><svg class="icono" aria-hidden="true"><use href="#i-regalo"/></svg></span>
+            <div><h3>Packs sorpresa</h3><p>Una bolsa con lo que le quedó al comercio ese día, a un precio fijo. El contenido cambia de un día a otro: la descripción es orientativa.</p></div>
+          </div>
+          <div class="fila">
+            <span class="burbuja"><svg class="icono" aria-hidden="true"><use href="#i-escudo"/></svg></span>
+            <div><h3>En buen estado, siempre</h3><p>Nada vencido y ningún medicamento: esos se venden sólo en la farmacia.</p></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== Para comercios ===== -->
+  <section class="seccion comercios" id="comercios" aria-labelledby="titulo-comercios">
+    <div class="contenedor">
+      <div class="encabezado" data-entrada>
+        <p class="sobretitulo">Para comercios</p>
+        <h2 id="titulo-comercios">Recuperá lo que ibas a perder</h2>
+        <p>Publicá lo que te sobró o está por vencer: pan, yogur o un shampoo con fecha. Lo que no se vende es pérdida; acá recuperás algo.</p>
+      </div>
+      <ul class="beneficios">
+        <li class="beneficio" data-entrada style="--i:0">
+          <figure><img src="img/app/comercio-publicar.webp" width="720" height="827" loading="lazy" decoding="async" alt="El formulario para publicar: qué es, cantidad y ventana de retiro."></figure>
+          <div class="texto"><h3>Publicar lleva un minuto</h3><p>Cargás qué es, cuántas tenés y a qué hora se retira. Si publicás siempre lo mismo, guardalo como plantilla y no lo cargás más.</p></div>
+        </li>
+        <li class="beneficio" data-entrada style="--i:1">
+          <figure><img src="img/app/comercio-cobro.webp" width="720" height="827" loading="lazy" decoding="async" alt="Una reserva pagada y el QR del cliente escaneado."></figure>
+          <div class="texto"><h3>Cobrás antes de entregar</h3><p>Con Mercado Pago el cliente paga al reservar: ves PAGADA antes de preparar, y si no viene cobrás igual. Al retirar, escaneás su QR.</p></div>
+        </li>
+        <li class="beneficio" data-entrada style="--i:2">
+          <figure><img src="img/app/comercio-panel.webp" width="720" height="827" loading="lazy" decoding="async" alt="El panel del comercio con lo recuperado y las unidades salvadas, día por día."></figure>
+          <div class="texto"><h3>Mirá cuánto recuperaste</h3><p>En tu panel ves lo que vendiste y cuántas unidades salvaste de tirarse, día por día.</p></div>
+        </li>
+      </ul>
+      <div class="alta">
+        <div data-entrada>
+          <h3>Cómo te sumás</h3>
+          <ol>
+            <li>Bajá Salvá y, al crear tu cuenta, elegí «Tengo un comercio».</li>
+            <li>Cargá los datos de tu local. Los verificamos antes de publicar.</li>
+            <li>Cuando aprobamos la solicitud te avisamos, y ya podés cargar ofertas.</li>
+          </ol>
+        </div>
+        <div class="costo" data-entrada style="--i:1">
+          <p class="grande">Sin costo fijo</p>
+          <p>Salvá cobra una comisión sobre cada venta, y nada más. Si cobrás con tu Mercado Pago vinculado, Mercado Pago cobra aparte la suya por procesar el pago.</p>
+          <div class="tiendas">
+            <a class="tienda tienda-play" href="https://play.google.com/store/apps/details?id=com.oportia.salva">
+              <img src="img/google-play-es.png" width="646" height="250" loading="lazy" alt="Disponible en Google Play">
+            </a>
+            <span class="tienda tienda-ios" data-app-store aria-disabled="true">
+              <svg class="icono" aria-hidden="true"><use href="#i-telefono"/></svg>
+              <span><small>Próximamente en</small><b>App Store</b></span>
+            </span>
+          </div>
+          <p style="margin:16px 0 0">¿Dudas? Escribinos a <a href="mailto:soporte@salvaapp.com.ar">soporte@salvaapp.com.ar</a>.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== Impacto ===== -->
+  <section class="seccion" id="impacto" aria-labelledby="titulo-impacto">
+    <div class="contenedor impacto">
+      <figure class="ilustracion" data-entrada>
+        <img src="img/app/impacto.webp" width="720" height="827" loading="lazy" decoding="async" alt="En la app: lo que ahorraste y cuántas unidades salvaste.">
+      </figure>
+      <div>
+        <div class="encabezado" style="margin-bottom:0" data-entrada>
+          <p class="sobretitulo">Impacto</p>
+          <h2 id="titulo-impacto">Cada unidad que se retira es una que no se tira</h2>
+          <p>Salvá lleva la cuenta por vos, compra por compra.</p>
+        </div>
+        <ul class="metricas">
+          <li data-entrada style="--i:1"><span class="burbuja"><svg class="icono" aria-hidden="true"><use href="#i-hoja"/></svg></span><span><strong>Unidades salvadas</strong><span class="t">Todo lo que retiraste en vez de que terminara en la basura.</span></span></li>
+          <li data-entrada style="--i:2"><span class="burbuja ambar"><svg class="icono" aria-hidden="true"><use href="#i-ahorro"/></svg></span><span><strong>Lo que ahorraste</strong><span class="t">La diferencia entre el precio de siempre y lo que pagaste.</span></span></li>
+          <li data-entrada style="--i:3"><span class="burbuja"><svg class="icono" aria-hidden="true"><use href="#i-sube"/></svg></span><span><strong>Lo que recupera el comercio</strong><span class="t">Plata que iba a perder y ahora entra, día por día.</span></span></li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== Preguntas ===== -->
+  <section class="seccion alt" id="preguntas" aria-labelledby="titulo-preguntas">
+    <div class="contenedor">
+      <div class="encabezado" data-entrada>
+        <p class="sobretitulo">Preguntas frecuentes</p>
+        <h2 id="titulo-preguntas">Lo que más nos preguntan</h2>
+      </div>
+      <div class="faq">
+        <div data-entrada>
+          <h3>Si comprás</h3>
+          <details><summary>¿Qué es Salvá?</summary><p>Comercios de tu ciudad publican lo que les sobró del día o está por vencer, a precio rebajado. Vos lo reservás, lo pagás y pasás a retirarlo.</p></details>
+          <details><summary>¿Cómo pago?</summary><p>Con Mercado Pago (tarjeta o dinero en cuenta) desde la app. En los locales que lo aceptan, también podés pagar al retirar, en efectivo o como acepte el local. Rapipago o Pago Fácil no: tardan días en acreditarse, y la oferta es para hoy.</p></details>
+          <details><summary>¿Cómo retiro?</summary><p>Pasá por el local dentro del horario de retiro y mostrá el código o el QR de tu reserva. Quien tenga el código puede retirar por vos.</p></details>
+          <details><summary>¿Puedo cancelar?</summary><p>Sí, en los primeros minutos después de pagar y antes de que empiece el horario de retiro: te devolvemos el 100%. En la reserva ves cuánto tiempo te queda. Si cancela el comercio, también te devolvemos el 100%.</p></details>
+          <details><summary>¿Qué pasa si no llego a retirar?</summary><p>No hay devolución: el comercio preparó y guardó tu pedido, y a esa hora ya no lo puede vender.</p></details>
+          <details><summary>¿Está para iPhone?</summary><p>Todavía no. Hoy Salvá está en Google Play para Android; la versión para iPhone viene en camino.</p></details>
+        </div>
+        <div data-entrada style="--i:1">
+          <h3>Si tenés un comercio</h3>
+          <details><summary>¿Cuánto cuesta usar Salvá?</summary><p>No hay costo fijo. Cobramos una comisión sobre cada venta. Si cobrás con tu Mercado Pago vinculado, Mercado Pago cobra aparte la suya por procesar el pago.</p></details>
+          <details><summary>¿Cuándo cobro?</summary><p>Si vinculás tu Mercado Pago, cada venta entra a tu cuenta en el momento, con la comisión de Salvá ya descontada. Si no, cobramos nosotros y te liquidamos: en Cobros ves cuánto te queda.</p></details>
+          <details><summary>¿Qué puedo publicar?</summary><p>Productos en buen estado que estén por vencer o que te hayan sobrado: pan y facturas, platos del día, bebidas, lácteos, cosmética, artículos de limpieza, alimento para mascotas, flores. Lo que no: nada vencido y ningún medicamento. Sos responsable por lo que vendés, igual que en tu mostrador.</p></details>
+          <details><summary>¿Qué pasa si el cliente no viene a retirar?</summary><p>La venta es tuya y no se devuelve: preparaste y guardaste el pedido.</p></details>
+          <details><summary>¿Cómo valido un retiro?</summary><p>Escaneá el QR del cliente o escribí su código. Cada reserva se entrega una sola vez: si alguien muestra un código ya usado, la app te avisa.</p></details>
+          <details><summary>¿Puedo programar una oferta o hacer que se repita?</summary><p>Sí. Podés programar cuándo se publica, y guardar como plantilla lo que publicás seguido: te avisamos el día y la hora que elijas.</p></details>
+        </div>
+      </div>
+      <p class="mas-ayuda" data-entrada>¿No encontraste lo que buscabas? Escribinos a <a href="mailto:soporte@salvaapp.com.ar">soporte@salvaapp.com.ar</a>.</p>
+    </div>
+  </section>
+
+  <!-- ===== Cierre ===== -->
+  <section class="seccion cierre" aria-labelledby="titulo-cierre">
+    <div class="contenedor" data-entrada>
+      <span class="marca-tile"><svg viewBox="0 0 100 100" aria-hidden="true"><use href="#simbolo" width="100" height="100"/></svg></span>
+      <h2 id="titulo-cierre">¿Qué hay cerca tuyo hoy?</h2>
+      <p class="bajada" style="margin-inline:auto">Bajá Salvá y fijate. Los comercios publican más cerca del cierre.</p>
+      <div class="tiendas">
+        <a class="tienda tienda-play" href="https://play.google.com/store/apps/details?id=com.oportia.salva">
+          <img src="img/google-play-es.png" width="646" height="250" loading="lazy" alt="Disponible en Google Play">
+        </a>
+        <span class="tienda tienda-ios" data-app-store aria-disabled="true">
+          <svg class="icono" aria-hidden="true"><use href="#i-telefono"/></svg>
+          <span><small>Próximamente en</small><b>App Store</b></span>
+        </span>
+      </div>
+    </div>
+  </section>
 </main>
-<footer>Salvá · Argentina</footer>
+
+<footer class="pie-sitio">
+  <div class="contenedor">
+    <div>
+      <a class="lockup" href="./"><span class="marca-tile" style="--t:30px"><svg viewBox="0 0 100 100" aria-hidden="true"><use href="#simbolo" width="100" height="100"/></svg></span>Salvá</a>
+      <p class="eslogan">Dale otra oportunidad.</p>
+    </div>
+    <nav aria-labelledby="pie-legal">
+      <h2 id="pie-legal">Legal</h2>
+      <ul>
+        <li><a href="privacidad.html">Privacidad</a></li>
+        <li><a href="terminos.html">Términos y condiciones</a></li>
+        <li><a href="eliminar-cuenta.html">Eliminar tu cuenta</a></li>
+      </ul>
+    </nav>
+    <nav aria-labelledby="pie-contacto">
+      <h2 id="pie-contacto">Contacto</h2>
+      <ul>
+        <li><a href="mailto:soporte@salvaapp.com.ar">soporte@salvaapp.com.ar</a></li>
+        <li><a href="https://play.google.com/store/apps/details?id=com.oportia.salva">Salvá en Google Play</a></li>
+      </ul>
+    </nav>
+    <p class="legal">© 2026 Salvá · Argentina. Google Play y el logo de Google Play son marcas de Google LLC.</p>
+  </div>
+</footer>
 </body>
 </html>
