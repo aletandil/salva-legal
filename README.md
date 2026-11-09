@@ -109,3 +109,7 @@ la app también habla de comisión. El dueño todavía no definió el modelo
 comercial (comisión por venta, plan mensual o los dos): la portada, a
 propósito, no promete ninguno. Si se decide otra cosa, cambian los términos
 y la app juntos.
+
+Lo que sí está decidido es la promo de lanzamiento: los primeros 2 meses de
+cada local, desde que se aprueba, sin comisión (en la app, la migración
+1240). La portada la dice, sin el porcentaje de después.

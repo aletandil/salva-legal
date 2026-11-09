@@ -440,6 +440,16 @@ html:not(.js) .recorrido { display: none; }
 .comercios .sobretitulo { color: var(--cian); }
 .comercios h2 { color: #fff; }
 .comercios .encabezado p { color: #C3D0E4; }
+/* La promo de lanzamiento: lo primero que tiene que leer un comercio que
+   duda, así que va en la banda y no sólo en la letra chica de abajo. */
+.comercios .encabezado .promo-lanzamiento {
+  display: inline-flex; align-items: center; gap: 8px; margin: 18px 0 0;
+  background: rgba(70, 231, 245, .14); border: 1px solid rgba(70, 231, 245, .45);
+  color: #fff; font-weight: 800; font-size: 17px; letter-spacing: -.01em;
+  padding: 8px 16px; border-radius: 999px;
+}
+.promo-lanzamiento .icono { width: 20px; height: 20px; color: var(--cian); flex: none; }
+.tildes strong { color: #fff; }
 .comercios a { color: var(--cian); }
 .comercios :focus-visible { outline-color: var(--cian); }
 .acciones { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 24px; }
