@@ -87,6 +87,10 @@
   <symbol id="i-regalo" viewBox="0 0 24 24"><path d="M20 6h-2.18c.11-.31.18-.65.18-1a2.996 2.996 0 0 0-5.5-1.65l-.5.67-.5-.68C10.96 2.54 10.05 2 9 2 7.34 2 6 3.34 6 5c0 .35.07.69.18 1H4c-1.11 0-1.99.89-1.99 2L2 19c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2zm-5-2c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zM9 4c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zm11 15H4v-2h16v2zm0-5H4V8h5.08L7 10.83 8.62 12 11 8.76l1-1.36 1 1.36L15.38 12 17 10.83 14.92 8H20v6z"/></symbol>
   <symbol id="i-escudo" viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-2 16l-4-4 1.41-1.41L10 14.17l6.59-6.59L18 9l-8 8z"/></symbol>
   <symbol id="i-telefono" viewBox="0 0 24 24"><path d="M17 1.01L7 1c-1.1 0-2 .9-2 2v18c0 1.1.9 2 2 2h10c1.1 0 2-.9 2-2V3c0-1.1-.9-1.99-2-1.99zM17 19H7V5h10v14z"/></symbol>
+  <symbol id="i-chat" viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM6 9h12v2H6V9zm8 5H6v-2h8v2zm4-6H6V6h12v2z"/></symbol>
+  <symbol id="i-mail" viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></symbol>
+  <symbol id="i-menu" viewBox="0 0 24 24"><path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/></symbol>
+  <symbol id="i-cerrar" viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></symbol>
 </svg>
 
 <header class="cabecera" id="cabecera">
@@ -95,13 +99,17 @@
       <span class="marca-tile" style="--t:34px"><svg viewBox="0 0 100 100" aria-hidden="true"><use href="#simbolo" width="100" height="100"/></svg></span>
       Salvá
     </a>
-    <nav class="menu" aria-label="Secciones">
+    <nav class="menu" id="menu" aria-label="Secciones">
       <a href="#como-funciona">Cómo funciona</a>
       <a href="#que-encontras">Qué encontrás</a>
       <a href="#comercios">Para comercios</a>
       <a href="#preguntas">Preguntas</a>
     </nav>
     <a class="boton" href="#bajar">Bajar la app</a>
+    <button class="boton-menu" type="button" aria-expanded="false" aria-controls="menu" aria-label="Menú">
+      <svg class="icono abrir" aria-hidden="true"><use href="#i-menu"/></svg>
+      <svg class="icono cerrar" aria-hidden="true"><use href="#i-cerrar"/></svg>
+    </button>
   </div>
 </header>
 
@@ -174,7 +182,7 @@
                   <div class="local"><svg class="icono"><use href="#i-local"/></svg>Panadería La Espiga · a 4 cuadras</div>
                   <div class="titulo">Facturas del día</div>
                   <div class="horario"><svg class="icono"><use href="#i-reloj"/></svg>Hoy de 18:00 a 20:30</div>
-                  <div class="pie"><span class="precio nuevo">$&nbsp;1.800</span><span class="antes">$&nbsp;3.600</span><span class="quedan">Quedan 2</span></div>
+                  <div class="pie"><span class="precio nuevo">$&nbsp;1.800</span><span class="antes">$&nbsp;3.600</span><span class="quedan"><span class="q2">Quedan 2</span><span class="q1">Quedan 1</span></span></div>
                 </div>
               </div>
               <div class="oferta">
@@ -190,6 +198,7 @@
                 </div>
               </div>
             </div>
+            <div class="snack"><span class="ok"><svg class="icono"><use href="#i-check"/></svg></span>Reservaste 1 · Facturas del día</div>
             <div class="nav-app">
               <span class="activo"><svg class="icono"><use href="#i-local"/></svg>Ofertas</span>
               <span><svg class="icono"><use href="#i-corazon"/></svg>Favoritos</span>
@@ -224,6 +233,7 @@
         <h2 id="titulo-como">Ves, reservás, pagás y retirás</h2>
         <p>Sin vueltas: en la app está todo lo que publicaron hoy los comercios cerca tuyo.</p>
       </div>
+      <div class="recorrido" aria-hidden="true"><i></i></div>
       <ol class="pasos">
         <li class="paso" data-entrada style="--i:0">
           <figure><img src="img/app/paso-cerca.webp" srcset="img/app/paso-cerca-360.webp 360w, img/app/paso-cerca.webp 720w" sizes="(max-width: 600px) 38vw, (max-width: 1020px) 46vw, 256px" width="720" height="827" loading="lazy" decoding="async" alt="El mapa de Salvá con comercios cerca y una panadería a cuatro cuadras."></figure>
@@ -292,34 +302,88 @@
       <div class="encabezado" data-entrada>
         <p class="sobretitulo">Para comercios</p>
         <h2 id="titulo-comercios">Recuperá lo que ibas a perder</h2>
-        <p>Publicá lo que te sobró o está por vencer: pan, yogur o un shampoo con fecha. Lo que no se vende es pérdida; acá recuperás algo.</p>
+        <p>Lo que te sobró o está por vencer —el pan del día, un yogur, un shampoo con fecha— pasa a ser una venta en vez de una pérdida. Sin cambiar cómo trabajás: alcanza con tu teléfono.</p>
+        <div class="acciones">
+          <a class="boton boton-claro" href="#sumate">Sumá tu local</a>
+          <a class="boton boton-linea" href="#condiciones">Cómo son las condiciones</a>
+        </div>
       </div>
-      <ul class="beneficios">
-        <li class="beneficio" data-entrada style="--i:0">
-          <figure><img src="img/app/comercio-publicar.webp" width="720" height="827" loading="lazy" decoding="async" alt="El formulario para publicar: qué es, cantidad y ventana de retiro."></figure>
-          <div class="texto"><h3>Publicar lleva un minuto</h3><p>Cargás qué es, cuántas tenés y a qué hora se retira. Si publicás siempre lo mismo, guardalo como plantilla y no lo cargás más.</p></div>
+
+      <h3 class="dia-titulo" data-entrada>Un día con Salvá</h3>
+      <!-- Los mockups son HTML y no capturas: se leen en los dos temas, pesan
+           nada y no hay que rehacerlos cada vez que cambia una pantalla. -->
+      <ol class="dia">
+        <li class="momento" data-entrada style="--i:0">
+          <div class="mock mock-publicar" aria-hidden="true">
+            <div class="mock-barra">Nueva oferta</div>
+            <div class="campo"><small>Qué es</small><span>Pan del día, por kilo</span></div>
+            <div class="campos">
+              <div class="campo"><small>Cantidad</small><span class="contador"><i>−</i>6<i>+</i></span></div>
+              <div class="campo"><small>Precio</small><span>$&nbsp;1.500</span></div>
+            </div>
+            <div class="campo"><small>Retiro</small><span class="retiro"><svg class="icono"><use href="#i-reloj"/></svg>Hoy de 20:00 a 21:00</span></div>
+            <span class="mock-boton">Publicar</span>
+          </div>
+          <div class="texto">
+            <span class="hora">19:30 · al cierre</span>
+            <h4>Publicás en un minuto</h4>
+            <p>Qué es, cuántas tenés y a qué hora se retira. Si publicás seguido lo mismo, lo guardás como plantilla y sale con un toque.</p>
+          </div>
         </li>
-        <li class="beneficio" data-entrada style="--i:1">
-          <figure><img src="img/app/comercio-cobro.webp" width="720" height="827" loading="lazy" decoding="async" alt="Una reserva pagada y el QR del cliente escaneado."></figure>
-          <div class="texto"><h3>Cobrás antes de entregar</h3><p>Con Mercado Pago el cliente paga al reservar: ves PAGADA antes de preparar, y si no viene cobrás igual. Al retirar, escaneás su QR.</p></div>
+        <li class="momento" data-entrada style="--i:1">
+          <div class="mock mock-avisos" aria-hidden="true">
+            <div class="noti n1">
+              <span class="marca-tile"><svg viewBox="0 0 100 100"><use href="#simbolo" width="100" height="100"/></svg></span>
+              <span><span class="tenue">Salvá · ahora</span><strong>Nueva reserva · 2 u.</strong><span class="tenue">Pan del día · <b class="pagada">Pagada</b></span></span>
+            </div>
+            <div class="noti n2">
+              <span class="marca-tile"><svg viewBox="0 0 100 100"><use href="#simbolo" width="100" height="100"/></svg></span>
+              <span><span class="tenue">Salvá · hace 4 min</span><strong>Nueva reserva · 1 u.</strong><span class="tenue">Pan del día · <b class="pagada">Pagada</b></span></span>
+            </div>
+            <div class="quedan-fila"><span>Pan del día</span><span class="barra"><i style="--v:.5"></i></span><span>3 de 6</span></div>
+          </div>
+          <div class="texto">
+            <span class="hora">19:34</span>
+            <h4>Te avisan las reservas</h4>
+            <p>Cada reserva te llega al teléfono. Si el cliente paga con Mercado Pago, la ves pagada antes de preparar nada.</p>
+          </div>
         </li>
-        <li class="beneficio" data-entrada style="--i:2">
-          <figure><img src="img/app/comercio-panel.webp" width="720" height="827" loading="lazy" decoding="async" alt="El panel del comercio con lo recuperado y las unidades salvadas, día por día."></figure>
-          <div class="texto"><h3>Mirá cuánto recuperaste</h3><p>En tu panel ves lo que vendiste y cuántas unidades salvaste de tirarse, día por día.</p></div>
+        <li class="momento" data-entrada style="--i:2">
+          <div class="mock mock-qr" aria-hidden="true">
+            <div class="visor"><svg class="qr"><use href="#i-qr"/></svg><span class="linea"></span></div>
+            <div class="entregado"><span class="ok"><svg class="icono"><use href="#i-check"/></svg></span><span><strong>Entregado</strong><span class="tenue">Código K7Q4 · 2 u.</span></span></div>
+          </div>
+          <div class="texto">
+            <span class="hora">20:10</span>
+            <h4>Entregás escaneando el QR</h4>
+            <p>El cliente muestra su código, lo escaneás y listo. Cada reserva se entrega una sola vez: si alguien trae un código ya usado, la app te avisa.</p>
+          </div>
         </li>
-      </ul>
-      <div class="alta">
+        <li class="momento" data-entrada style="--i:3">
+          <div class="mock mock-panel" aria-hidden="true">
+            <div class="fichas">
+              <div><small>Recuperado hoy</small><strong>$&nbsp;13.500</strong></div>
+              <div><small>Unidades salvadas</small><strong>9</strong></div>
+            </div>
+            <div class="barras"><i style="--v:.45"></i><i style="--v:.6"></i><i style="--v:.35"></i><i style="--v:.7"></i><i style="--v:.55"></i><i style="--v:.8"></i><i class="hoy" style="--v:.9"></i></div>
+            <div class="dias"><span>L</span><span>M</span><span>M</span><span>J</span><span>V</span><span>S</span><span>Hoy</span></div>
+          </div>
+          <div class="texto">
+            <span class="hora">21:00</span>
+            <h4>Ves lo que recuperaste</h4>
+            <p>En tu panel, lo que vendiste y las unidades que salvaste de tirarse, día por día. Lo podés exportar cuando quieras.</p>
+          </div>
+        </li>
+      </ol>
+
+      <div class="alta" id="sumate">
         <div data-entrada>
-          <h3>Cómo te sumás</h3>
+          <h3>Sumá tu local</h3>
           <ol>
             <li>Bajá Salvá y, al crear tu cuenta, elegí «Tengo un comercio».</li>
             <li>Cargá los datos de tu local. Los verificamos antes de publicar.</li>
             <li>Cuando aprobamos la solicitud te avisamos, y ya podés cargar ofertas.</li>
           </ol>
-        </div>
-        <div class="costo" data-entrada style="--i:1">
-          <p class="grande">Sin costo fijo</p>
-          <p>Salvá cobra una comisión sobre cada venta, y nada más. Si cobrás con tu Mercado Pago vinculado, Mercado Pago cobra aparte la suya por procesar el pago.</p>
           <div class="tiendas">
             <a class="tienda tienda-play" href="https://play.google.com/store/apps/details?id=com.oportia.salva">
               <img src="img/google-play-es-290.webp" srcset="img/google-play-es-290.webp 290w, img/google-play-es.png 646w" sizes="145px" width="646" height="250" loading="lazy" alt="Disponible en Google Play">
@@ -329,7 +393,20 @@
               <span><small>Próximamente en</small><b>App Store</b></span>
             </span>
           </div>
-          <p style="margin:16px 0 0">¿Dudas? Escribinos a <a href="mailto:soporte@salvaapp.com.ar">soporte@salvaapp.com.ar</a>.</p>
+        </div>
+        <div class="condiciones" id="condiciones" data-entrada style="--i:1">
+          <p class="grande">Darte de alta no tiene costo</p>
+          <ul class="tildes">
+            <li><svg class="icono" aria-hidden="true"><use href="#i-check"/></svg>Sumarte es gratis y no tenés que comprar equipos: alcanza con tu teléfono.</li>
+            <li><svg class="icono" aria-hidden="true"><use href="#i-check"/></svg>Las condiciones comerciales las acordamos con vos antes de que empieces a vender, y siempre las ves claras en la app.</li>
+            <li><svg class="icono" aria-hidden="true"><use href="#i-check"/></svg>Si vinculás tu Mercado Pago, cada venta te entra en el momento.</li>
+          </ul>
+          <p>¿Querés conocerlas antes de sumarte? Escribinos y te contamos.</p>
+          <div class="acciones">
+            <a class="boton boton-claro" href="https://wa.me/5492494532351?text=Hola%2C%20quiero%20sumar%20mi%20local%20a%20Salv%C3%A1."><svg class="icono" aria-hidden="true"><use href="#i-chat"/></svg>Escribinos por WhatsApp</a>
+            <a class="boton boton-linea" href="mailto:soporte@salvaapp.com.ar?subject=Quiero%20sumar%20mi%20local&amp;body=Hola%2C%20tengo%20un%20local%20y%20quiero%20conocer%20las%20condiciones%20para%20sumarme.%0A%0ANombre%20del%20local%3A%20%0ARubro%3A%20%0ACiudad%3A%20%0ATel%C3%A9fono%3A%20"><svg class="icono" aria-hidden="true"><use href="#i-mail"/></svg>Mandanos un mail</a>
+          </div>
+          <p class="nota">soporte@salvaapp.com.ar · WhatsApp +54&nbsp;9&nbsp;2494&nbsp;53-2351</p>
         </div>
       </div>
     </div>
@@ -375,8 +452,8 @@
         </div>
         <div data-entrada style="--i:1">
           <h3>Si tenés un comercio</h3>
-          <details><summary>¿Cuánto cuesta usar Salvá?</summary><p>No hay costo fijo. Cobramos una comisión sobre cada venta. Si cobrás con tu Mercado Pago vinculado, Mercado Pago cobra aparte la suya por procesar el pago.</p></details>
-          <details><summary>¿Cuándo cobro?</summary><p>Si vinculás tu Mercado Pago, cada venta entra a tu cuenta en el momento, con la comisión de Salvá ya descontada. Si no, cobramos nosotros y te liquidamos: en Cobros ves cuánto te queda.</p></details>
+          <details><summary>¿Cuánto cuesta usar Salvá?</summary><p>Darte de alta no tiene costo y no tenés que comprar equipos: alcanza con tu teléfono. Las condiciones comerciales las acordamos con cada local antes de que empiece a vender, y después las ves claras en la app. Si cobrás con tu Mercado Pago vinculado, Mercado Pago cobra aparte lo suyo por procesar el pago. ¿Querés conocerlas antes? <a href="#condiciones">Escribinos</a>.</p></details>
+          <details><summary>¿Cuándo cobro?</summary><p>Si vinculás tu Mercado Pago, cada venta entra a tu cuenta en el momento. Si no, cobramos nosotros y te liquidamos: en Cobros ves cuánto te queda, venta por venta.</p></details>
           <details><summary>¿Qué puedo publicar?</summary><p>Productos en buen estado que estén por vencer o que te hayan sobrado: pan y facturas, platos del día, bebidas, lácteos, cosmética, artículos de limpieza, alimento para mascotas, flores. Lo que no: nada vencido y ningún medicamento. Sos responsable por lo que vendés, igual que en tu mostrador.</p></details>
           <details><summary>¿Qué pasa si el cliente no viene a retirar?</summary><p>La venta es tuya y no se devuelve: preparaste y guardaste el pedido.</p></details>
           <details><summary>¿Cómo valido un retiro?</summary><p>Escaneá el QR del cliente o escribí su código. Cada reserva se entrega una sola vez: si alguien muestra un código ya usado, la app te avisa.</p></details>

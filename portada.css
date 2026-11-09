@@ -68,6 +68,11 @@
 
 * { box-sizing: border-box; }
 html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+/* Lo que se abre desde el menú no puede quedar debajo de la cabecera fija. */
+[id] { scroll-margin-top: 80px; }
+/* Las secciones ya traen 88px de aire arriba: alcanza con que el título
+   quede debajo de la cabecera. */
+section[id] { scroll-margin-top: 0; }
 @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
 body {
   margin: 0;
@@ -131,13 +136,37 @@ a { color: var(--primario); text-underline-offset: 3px; }
   background: var(--primario); color: var(--sobre-primario);
   transition: transform .11s ease-out, filter .16s;
 }
-.boton:hover { filter: brightness(1.08); }
+.boton:hover { filter: brightness(1.08); box-shadow: 0 6px 18px -4px rgba(8, 104, 219, .45); }
 .boton:active { transform: scale(.975); }
 .cabecera .boton { margin-left: 8px; }
+.menu a[aria-current="true"] { color: var(--primario-oscuro); background: var(--primario-tinte); }
+
+/* El menú del teléfono. Sin JS el botón no aparece y el menú sigue
+   escondido, como antes: las secciones se alcanzan bajando. */
+.boton-menu {
+  display: none; place-items: center; width: 44px; height: 44px; flex: none;
+  border: 1px solid var(--borde); border-radius: 14px; background: var(--papel);
+  color: var(--tinta); cursor: pointer; padding: 0;
+}
+.boton-menu .icono { width: 24px; height: 24px; }
+.boton-menu .cerrar, .abierta .boton-menu .abrir { display: none; }
+.abierta .boton-menu .cerrar { display: block; }
 @media (max-width: 820px) {
   .menu { display: none; }
   .cabecera .boton { margin-left: auto; }
+  .js .boton-menu { display: grid; }
+  .cabecera.abierta { border-bottom-color: var(--borde); }
+  .abierta .menu {
+    display: grid; gap: 2px; position: absolute; left: 0; right: 0; top: 64px;
+    padding: 8px var(--canal) 16px; margin: 0;
+    background: var(--fondo); border-bottom: 1px solid var(--borde); box-shadow: var(--sombra-alta);
+  }
+  .abierta .menu a { font-size: 17px; padding: 12px 14px; border-radius: 14px; color: var(--tinta); }
 }
+@media (max-width: 820px) and (prefers-reduced-motion: no-preference) {
+  .abierta .menu { animation: bajar-menu .18s ease-out; }
+}
+@keyframes bajar-menu { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: none; } }
 
 /* ---------- Fondo abstracto (AbstractBackdrop de la app) ---------- */
 .fondo-abstracto {
@@ -191,7 +220,9 @@ a { color: var(--primario); text-underline-offset: 3px; }
 
 /* Los botones de las tiendas. El de Google es el badge oficial (PNG de
    Google, con su margen transparente: por eso mide 56 para verse de 44). */
-.tienda { display: inline-flex; border-radius: 10px; }
+.tienda { display: inline-flex; border-radius: 10px; transition: transform .16s ease-out, box-shadow .16s; }
+a.tienda:hover { transform: translateY(-2px); box-shadow: 0 8px 18px -6px rgba(6, 36, 94, .45); }
+a.tienda:active { transform: scale(.975); }
 .tienda-play img { height: 56px; width: auto; max-width: none; margin: -6px -6px; }
 .tienda-ios {
   height: 44px; padding: 0 16px 0 14px; gap: 10px; align-items: center;
@@ -295,6 +326,19 @@ a { color: var(--primario); text-underline-offset: 3px; }
 .nav-app .activo { color: var(--primario-oscuro); }
 .nav-app .activo .icono { background: var(--primario-suave); border-radius: 999px; padding: 2px 10px; width: 36px; height: 20px; }
 
+/* El final de la escena: se reserva una, aparece la confirmación y quedan
+   menos. Una sola vez, nada de bucles. */
+.quedan .q1 { display: none; }
+.snack {
+  position: absolute; left: 10px; right: 10px; bottom: 62px; z-index: 2;
+  display: flex; align-items: center; gap: 8px;
+  background: var(--tinta); color: var(--fondo); border-radius: 12px;
+  padding: 8px 10px; font-size: 10.5px; font-weight: 600;
+  box-shadow: var(--sombra-alta); opacity: 0; visibility: hidden;
+}
+.snack .ok { width: 18px; height: 18px; border-radius: 50%; display: grid; place-items: center; background: var(--exito); color: #fff; flex: none; }
+.snack .ok .icono { width: 12px; height: 12px; }
+
 /* Lo que flota alrededor del teléfono. */
 .flotante {
   position: absolute; z-index: 2;
@@ -335,7 +379,13 @@ h2 { font-size: clamp(30px, 4vw, 44px); line-height: 1.1; letter-spacing: -.03em
 h3 { font-size: 19px; line-height: 1.3; letter-spacing: -.01em; margin: 0 0 6px; font-weight: 700; }
 .encabezado p { color: var(--tinta-media); font-size: 18px; margin: 0; }
 
-/* Cómo funciona */
+/* Cómo funciona. La barra se llena al bajar, y cada paso al que llega se
+   marca: es lo que hace la app con el avance de una reserva. */
+.recorrido { height: 4px; border-radius: 999px; background: var(--primario-suave); margin: -20px 0 24px; overflow: hidden; }
+.recorrido i { display: block; height: 100%; width: calc(var(--avance, 0) * 100%); background: linear-gradient(90deg, var(--primario), #00A3E0); border-radius: inherit; }
+html:not(.js) .recorrido { display: none; }
+.numero { transition: background-color .25s, color .25s; }
+.paso.hecho .numero { background: var(--primario); color: var(--sobre-primario); }
 .pasos { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 20px; }
 .paso {
   background: var(--papel); border: 1px solid var(--borde); border-radius: 20px;
@@ -391,32 +441,112 @@ h3 { font-size: 19px; line-height: 1.3; letter-spacing: -.01em; margin: 0 0 6px;
 .comercios h2 { color: #fff; }
 .comercios .encabezado p { color: #C3D0E4; }
 .comercios a { color: var(--cian); }
-.beneficios { list-style: none; margin: 0 0 56px; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; }
-.beneficio {
-  background: rgba(255, 255, 255, .06); border: 1px solid rgba(255, 255, 255, .12);
-  border-radius: 20px; overflow: hidden;
+.comercios :focus-visible { outline-color: var(--cian); }
+.acciones { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 24px; }
+.comercios .boton-claro { background: #fff; color: var(--marino); }
+.boton-claro:hover { filter: none; background: #E3F1FF; }
+.comercios .boton-linea { background: transparent; color: #fff; box-shadow: inset 0 0 0 1.5px rgba(255, 255, 255, .45); }
+.boton-linea:hover { filter: none; background: rgba(255, 255, 255, .08); box-shadow: inset 0 0 0 1.5px #fff; }
+.boton .icono { width: 20px; height: 20px; }
+
+/* Un día con Salvá: cuatro momentos, cada uno con su pantallita. */
+.dia-titulo { color: #fff; font-size: 22px; margin: 64px 0 20px; }
+.dia {
+  list-style: none; margin: 0 0 64px; padding: 0; counter-reset: dia;
+  display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 20px;
 }
-.beneficio figure { margin: 0; background: #EEF4FB; }
-.beneficio figure img { width: 100%; aspect-ratio: 720 / 600; object-fit: cover; object-position: center 55%; }
-.beneficio .texto { padding: 18px 20px 22px; }
-.beneficio h3 { color: #fff; }
-.beneficio p { margin: 0; color: #C3D0E4; font-size: 15px; }
+.momento {
+  background: rgba(255, 255, 255, .06); border: 1px solid rgba(255, 255, 255, .12);
+  border-radius: 20px; padding: 14px; display: flex; flex-direction: column; gap: 4px;
+}
+.momento .texto { padding: 10px 6px 6px; }
+.momento .hora { display: inline-block; color: var(--cian); font-weight: 700; font-size: 13px; letter-spacing: .02em; margin-bottom: 6px; }
+.momento h4 { color: #fff; font-size: 18px; line-height: 1.3; letter-spacing: -.01em; margin: 0 0 6px; }
+.momento p { margin: 0; color: #C3D0E4; font-size: 15px; }
+
+/* Las pantallitas: superficies de la app (siguen al tema, como el teléfono
+   del hero), a la escala de una tarjeta y no de una pantalla entera. */
+.mock {
+  position: relative; height: 204px; border-radius: 14px; overflow: hidden;
+  background: var(--fondo); color: var(--tinta);
+  font-size: 11.5px; line-height: 1.3; padding: 11px 12px 12px;
+  display: flex; flex-direction: column; gap: 6px;
+}
+.mock small { display: block; color: var(--tinta-tenue); font-size: 10px; font-weight: 600; }
+.mock .tenue { display: block; color: var(--tinta-tenue); font-size: 10px; }
+.mock-barra { font-weight: 800; font-size: 13px; letter-spacing: -.01em; }
+.campo { background: var(--papel); border: 1px solid var(--borde); border-radius: 9px; padding: 3px 9px 4px; font-weight: 600; }
+.campos { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+.contador { display: inline-flex; gap: 9px; align-items: center; }
+.contador i { font-style: normal; color: var(--primario); font-weight: 800; }
+.retiro { display: inline-flex; gap: 4px; align-items: center; color: var(--ambar-texto); }
+.retiro .icono { color: var(--ambar); }
+.mock-boton {
+  margin-top: auto; text-align: center; border-radius: 10px; padding: 6px;
+  background: var(--primario); color: var(--sobre-primario); font-weight: 700; font-size: 12px;
+}
+.noti {
+  display: flex; gap: 8px; align-items: center;
+  background: var(--papel); border: 1px solid var(--borde); border-radius: 12px;
+  padding: 7px 9px; box-shadow: var(--sombra);
+}
+.noti .marca-tile { --t: 26px; border-radius: 7px; box-shadow: none; }
+.noti strong { display: block; font-size: 12px; }
+.pagada { color: var(--exito); font-weight: 700; }
+.quedan-fila { margin-top: auto; display: flex; align-items: center; gap: 8px; font-size: 10.5px; font-weight: 600; color: var(--tinta-media); }
+.quedan-fila .barra { flex: 1; height: 6px; border-radius: 999px; background: var(--primario-suave); overflow: hidden; }
+.quedan-fila .barra i { display: block; height: 100%; width: calc(var(--v) * 100%); background: var(--primario); border-radius: inherit; }
+.mock-qr { align-items: center; justify-content: center; gap: 10px; background: #0B1426; }
+.visor { position: relative; width: 104px; height: 104px; display: grid; place-items: center; }
+.visor::before {
+  content: ""; position: absolute; inset: 0; border-radius: 14px;
+  background:
+    linear-gradient(var(--cian), var(--cian)) 0 0 / 22px 3px, linear-gradient(var(--cian), var(--cian)) 0 0 / 3px 22px,
+    linear-gradient(var(--cian), var(--cian)) 100% 0 / 22px 3px, linear-gradient(var(--cian), var(--cian)) 100% 0 / 3px 22px,
+    linear-gradient(var(--cian), var(--cian)) 0 100% / 22px 3px, linear-gradient(var(--cian), var(--cian)) 0 100% / 3px 22px,
+    linear-gradient(var(--cian), var(--cian)) 100% 100% / 22px 3px, linear-gradient(var(--cian), var(--cian)) 100% 100% / 3px 22px;
+  background-repeat: no-repeat;
+}
+.visor .qr { width: 70px; height: 70px; fill: currentColor; background: #fff; color: #0B1426; border-radius: 6px; padding: 4px; }
+.visor .linea { position: absolute; left: 12px; right: 12px; top: 50%; height: 2px; background: var(--cian); box-shadow: 0 0 10px var(--cian); opacity: .8; }
+.entregado {
+  display: flex; gap: 8px; align-items: center; background: var(--papel); color: var(--tinta);
+  border-radius: 12px; padding: 6px 12px 6px 7px;
+}
+.entregado strong { display: block; font-size: 12px; }
+.entregado .ok { width: 24px; height: 24px; border-radius: 50%; display: grid; place-items: center; background: var(--exito); color: #fff; }
+@media (prefers-color-scheme: dark) { .entregado .ok { color: #04122B; } }
+.entregado .ok .icono { width: 15px; height: 15px; }
+.fichas { display: grid; grid-template-columns: 1fr 1fr; gap: 7px; }
+.fichas div { background: var(--papel); border: 1px solid var(--borde); border-radius: 10px; padding: 6px 9px; }
+.fichas strong { display: block; font-size: 17px; font-weight: 800; letter-spacing: -.02em; color: var(--primario-oscuro); }
+.barras { flex: 1; display: flex; align-items: flex-end; gap: 6px; padding: 4px 2px 0; }
+.barras i { flex: 1; height: calc(var(--v) * 100%); border-radius: 5px 5px 2px 2px; background: var(--primario-suave); transform-origin: bottom; }
+.barras i.hoy { background: var(--primario); }
+.dias { display: flex; gap: 6px; padding: 0 2px; }
+.dias span { flex: 1; text-align: center; font-size: 9.5px; color: var(--tinta-tenue); font-weight: 600; }
+
+/* Sumá tu local */
 .alta { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 32px; align-items: start; }
 .alta h3 { color: #fff; font-size: 22px; margin-bottom: 18px; }
-.alta ol { margin: 0; padding: 0; list-style: none; counter-reset: alta; display: grid; gap: 16px; }
-.alta li { counter-increment: alta; display: flex; gap: 14px; color: #D5DEEC; }
-.alta li::before {
+.alta ol { margin: 0 0 24px; padding: 0; list-style: none; counter-reset: alta; display: grid; gap: 16px; }
+.alta ol li { counter-increment: alta; display: flex; gap: 14px; color: #D5DEEC; }
+.alta ol li::before {
   content: counter(alta); flex: none; width: 30px; height: 30px; border-radius: 10px;
   display: grid; place-items: center; font-weight: 800; font-size: 14px;
   background: rgba(70, 231, 245, .16); color: var(--cian);
 }
-.costo {
+.condiciones {
   background: rgba(255, 255, 255, .06); border: 1px solid rgba(255, 255, 255, .14);
   border-radius: 20px; padding: 24px;
 }
-.costo .grande { font-size: 28px; font-weight: 800; color: #fff; letter-spacing: -.02em; margin: 0 0 6px; }
-.costo p { margin: 0 0 18px; color: #C3D0E4; font-size: 15px; }
-.costo .tiendas { margin-top: 4px; }
+.condiciones .grande { font-size: 26px; line-height: 1.2; font-weight: 800; color: #fff; letter-spacing: -.02em; margin: 0 0 14px; }
+.condiciones p { margin: 0; color: #C3D0E4; font-size: 15px; }
+.tildes { list-style: none; margin: 0 0 18px; padding: 0; display: grid; gap: 10px; }
+.tildes li { display: flex; gap: 10px; color: #E8EEF7; font-size: 15px; }
+.tildes .icono { width: 20px; height: 20px; color: var(--cian); margin-top: 2px; }
+.condiciones .acciones { margin-top: 16px; }
+.condiciones .nota { margin-top: 14px; font-size: 13px; color: #A9B8D0; }
 
 /* Impacto */
 .impacto { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 48px; align-items: center; }
@@ -470,10 +600,7 @@ details p { margin: 0; padding: 0 18px 18px; color: var(--tinta-media); font-siz
 /* ---------- Responsive ---------- */
 @media (max-width: 1020px) {
   .pasos { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .beneficios { grid-template-columns: minmax(0, 1fr); max-width: 560px; }
-  .beneficio { display: grid; grid-template-columns: 200px minmax(0, 1fr); align-items: center; }
-  .beneficio figure, .beneficio figure img { height: 100%; }
-  .beneficio figure img { aspect-ratio: auto; }
+  .dia { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 @media (max-width: 900px) {
   .hero { padding-top: 24px; }
@@ -488,6 +615,7 @@ details p { margin: 0; padding: 0 18px 18px; color: var(--tinta-media); font-siz
   .encabezado { margin-bottom: 32px; }
   .encabezado p { font-size: 16px; }
   .pasos { grid-template-columns: minmax(0, 1fr); gap: 14px; }
+  .recorrido { display: none; }
   /* En el teléfono, cada paso es una fila: la ilustración al costado en vez
      de cuatro imágenes a lo alto de la pantalla. */
   .paso { flex-direction: row; align-items: center; }
@@ -496,10 +624,10 @@ details p { margin: 0; padding: 0 18px 18px; color: var(--tinta-media); font-siz
   .paso .texto { padding: 14px 16px; }
   .paso h3 { font-size: 17px; }
   .paso p { font-size: 14px; }
-  .beneficio { grid-template-columns: 112px minmax(0, 1fr); }
-  .beneficio .texto { padding: 14px 16px; }
-  .beneficio h3 { font-size: 17px; }
-  .beneficio p { font-size: 14px; }
+  .dia { grid-template-columns: minmax(0, 1fr); gap: 14px; margin-bottom: 48px; }
+  .dia-titulo { margin-top: 48px; }
+  .momento p { font-size: 14px; }
+  .acciones .boton { flex: 1 1 auto; }
   .escena { min-height: 520px; }
   .telefono { scale: .86; margin: -42px 0; }
   .f-aviso { right: -4px; top: 10px; max-width: 220px; }
@@ -553,7 +681,24 @@ details p { margin: 0; padding: 0 18px 18px; color: var(--tinta-media); font-siz
   [data-tachar] .nuevo { opacity: 0; transform: translateY(4px); transition: opacity .35s .4s, transform .35s .4s; display: inline-block; }
   [data-tachar].tachado .antes::after { transform: scaleX(1); }
   [data-tachar].tachado .nuevo { opacity: 1; transform: none; }
+
+  .reservado .snack { animation: snack 4.2s cubic-bezier(.2, .7, .2, 1) both; }
+  .reservado .quedan .q2 { display: none; }
+  .reservado .quedan .q1 { display: inline; animation: entrar .4s .3s both; }
+  .recorrido i { transition: width .25s linear; }
+  .momento.visible .noti { animation: entrar .5s both; }
+  .momento.visible .noti.n1 { animation-delay: .5s; }
+  .momento.visible .noti.n2 { animation-delay: .2s; }
+  .momento.visible .barras i { animation: crecer .6s cubic-bezier(.2, .7, .2, 1) both; animation-delay: calc(.3s + var(--v) * .3s); }
+  .momento.visible .visor .linea { animation: escanear 1.4s .4s ease-in-out 2 alternate both; }
 }
+@keyframes snack {
+  0% { opacity: 0; visibility: visible; transform: translateY(14px); }
+  8%, 86% { opacity: 1; visibility: visible; transform: none; }
+  100% { opacity: 0; visibility: hidden; transform: translateY(6px); }
+}
+@keyframes crecer { from { transform: scaleY(.1); } to { transform: none; } }
+@keyframes escanear { from { translate: 0 -34px; } to { translate: 0 34px; } }
 @keyframes subir { from { opacity: 0; transform: translateY(8px) rotate(45deg) scale(.8); } to { opacity: 1; transform: rotate(45deg); } }
 @keyframes rayo { from { opacity: 0; transform: scale(.01); } to { opacity: 1; transform: none; } }
 @keyframes halo { 0% { opacity: 0; transform: scale(.5); } 45% { opacity: 1; transform: scale(1.12); } 100% { opacity: .7; transform: scale(1); } }
