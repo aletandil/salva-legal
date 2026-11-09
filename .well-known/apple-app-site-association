@@ -1,0 +1,21 @@
+{
+  "applinks": {
+    "details": [
+      {
+        "appIDs": ["TY62F6BVKD.com.oportia.salva"],
+        "components": [
+          {
+            "/": "/oferta.html",
+            "comment": "Una oferta compartida: oferta.html?id=<uuid>"
+          },
+          {
+            "/": "/comercio.html",
+            "comment": "La ficha de un comercio: comercio.html?id=<uuid>"
+          }
+        ],
+        "appID": "TY62F6BVKD.com.oportia.salva",
+        "paths": ["/oferta.html", "/comercio.html"]
+      }
+    ]
+  }
+}
