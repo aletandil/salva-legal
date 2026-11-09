@@ -1,26 +1,37 @@
 /* Hoja común de las páginas legales de Salvá.
-   Sin frameworks ni fuentes remotas: son tres páginas de texto que tienen que
+   Sin frameworks ni fuentes remotas: son páginas de texto que tienen que
    abrir rápido en un teléfono con mala señal, y que Google tiene que poder
-   leer sin que nada se caiga. */
+   leer sin que nada se caiga. La letra de la marca se sirve desde acá, con
+   `swap`: si tarda, se lee igual con la del sistema. */
+@font-face {
+  font-family: "Plus Jakarta Sans";
+  font-style: normal;
+  font-weight: 400 800;
+  font-display: swap;
+  src: url(fuentes/plus-jakarta-sans-latin.woff2) format("woff2");
+}
 :root {
   color-scheme: light dark;
-  --azul: #0d5eaf;
-  --hoja: #d07a0e;
-  --tinta: #16202c;
-  --tinta-suave: #52616f;
-  --fondo: #f7f8fa;
-  --papel: #ffffff;
-  --borde: #e3e7ec;
+  /* Los colores de la app (Azul Salvá, 2026-10-28). Los nombres quedan como
+     estaban porque oferta.html, retiro.html y las demás los redefinen o los
+     usan en línea. */
+  --azul: #0868DB;
+  --hoja: #A15D00;
+  --tinta: #0E1A33;
+  --tinta-suave: #4D5A72;
+  --fondo: #F6F9FD;
+  --papel: #FFFFFF;
+  --borde: #DDE6F1;
 }
 @media (prefers-color-scheme: dark) {
   :root {
-    --azul: #6fb0f5;
-    --hoja: #f0a542;
-    --tinta: #e8edf3;
-    --tinta-suave: #9aa7b4;
-    --fondo: #10151b;
-    --papel: #171e26;
-    --borde: #28323d;
+    --azul: #4AA3FF;
+    --hoja: #F2A93B;
+    --tinta: #E8EEF7;
+    --tinta-suave: #A3B0C4;
+    --fondo: #0A1328;
+    --papel: #111D36;
+    --borde: #24324F;
   }
 }
 * { box-sizing: border-box; }
@@ -29,16 +40,16 @@ body {
   padding: 0 16px 64px;
   background: var(--fondo);
   color: var(--tinta);
-  font: 16px/1.65 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  font: 16px/1.65 "Plus Jakarta Sans", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
 }
 main { max-width: 720px; margin: 0 auto; }
 header { max-width: 720px; margin: 0 auto; padding: 32px 0 8px; }
 .marca {
   display: inline-flex; align-items: center; gap: 10px;
-  font-weight: 700; font-size: 20px; color: var(--azul);
-  text-decoration: none;
+  font-weight: 800; font-size: 20px; color: var(--tinta);
+  text-decoration: none; letter-spacing: -.02em;
 }
-.marca svg { width: 28px; height: 28px; }
+.marca svg, .marca img { width: 30px; height: 30px; border-radius: 7px; }
 h1 { font-size: 28px; line-height: 1.25; margin: 24px 0 4px; }
 h2 { font-size: 19px; margin: 32px 0 8px; }
 .fecha { color: var(--tinta-suave); font-size: 14px; margin: 0 0 24px; }
