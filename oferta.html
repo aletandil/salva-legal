@@ -114,10 +114,23 @@
   // Con el id de la oferta en el referrer: Play lo guarda con la
   // instalación, y así se puede medir cuántas instalaciones trae un link
   // compartido, y cuál.
+  //
+  // Si el link trae `codigo` (el de invitación de quien la compartió, desde
+  // la app), va en el referrer con `utm_source=invitacion`: es lo que la app
+  // busca para precompletar "¿Te invitó alguien?" (`codigoDelReferrer`).
+  // Se pierde el "compartir" en el conteo de Play, pero una instalación con
+  // código es una invitación, y sin ese origen la app no lo toma. Sólo un
+  // código con la forma de los que reparte la base: viene de afuera.
+  var CODIGO = (function () {
+    var c = (new URLSearchParams(location.search).get('codigo') || '').trim().toUpperCase();
+    return /^[A-Z0-9]{8}$/.test(c) ? c : '';
+  })();
   function play(id) {
+    var origen = CODIGO
+      ? 'utm_source=invitacion&codigo=' + encodeURIComponent(CODIGO) + '&utm_medium=oferta'
+      : 'utm_source=compartir&utm_medium=oferta';
     return 'https://play.google.com/store/apps/details?id=' + PAQUETE +
-      '&referrer=' + encodeURIComponent('utm_source=compartir&utm_medium=oferta' +
-        (id ? '&utm_content=' + id : ''));
+      '&referrer=' + encodeURIComponent(origen + (id ? '&utm_content=' + id : ''));
   }
   // iPhone y iPad (los iPad nuevos se presentan como Mac con pantalla
   // táctil). Salvá no está en el App Store: ahí no hay botón de Play, y se
