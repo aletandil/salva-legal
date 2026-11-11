@@ -73,6 +73,11 @@ acá la `service_role`.
 
 **No tocar:**
 
+- `img/generica/`: copia de las fotos de ejemplo de la app
+  (`assets/images/generica/` en el repo de la app). Cuando una oferta usa
+  una, la vista previa del link (Edge Function `compartir`) la baja de acá
+  por su nombre. Si la app suma o renombra una, se copia también acá; sin
+  ella, la tarjeta sale con el arte del rubro.
 - `.well-known/assetlinks.json`: la huella de la firma de Play para que
   Android abra los links en la app (App Links) y recupere la sesión en un
   teléfono nuevo. Un error acá y los links abren el navegador.
