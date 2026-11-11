@@ -19,7 +19,7 @@ editar creyendo que era la web.
 - `.nojekyll` hace que GitHub Pages publique `.well-known/` (sin él, Jekyll
   ignora las carpetas que empiezan con punto). No borrarlo.
 - **Cloudflare** está delante: tiene el DNS del dominio y el reenvío de
-  `soporte@salvaapp.com.ar`. Para las rutas `/oferta*` y `/comercio*` hay
+  `soporte@salvaapp.com.ar`. Para las rutas `/oferta*`, `/comercio*` y `/hoy*` hay
   además un Worker (código en el repo de la app, `cloudflare/compartir/`)
   que le pone a la página la vista previa de esa oferta o ese local para
   WhatsApp. Si el Worker y el proxy de Cloudflare ya están prendidos es un
@@ -57,6 +57,7 @@ la app. El diseño se puede tocar.
 |---|---|---|
 | `oferta.html?id=…` | Link de "Compartir oferta" | Muestra la oferta y lleva a la app o a Play |
 | `comercio.html?id=…` | Link de un local y el QR del cartel | Muestra el local y lleva a la app o a Play |
+| `hoy.html?ciudad=…` | "Compartir las ofertas de hoy" (el slug de la ciudad) | Muestra las ofertas vigentes de la ciudad y lleva a la app o a Play |
 | `retiro.html#…` | "Retira otra persona" | Muestra el código y el QR de una compra |
 | `equipo.html#…` | Invitación al equipo de un local | Abre la app con la invitación |
 | `cuenta.html?tipo=…` | Links de los mails de cuenta (Supabase) | Dice si la cuenta quedó confirmada o la contraseña cambiada y abre la app |
@@ -66,7 +67,7 @@ la app. El diseño se puede tocar.
 Las que no tienen nada que mostrar a un buscador llevan `noindex`; `robots.txt`
 explica por qué no se bloquean ahí.
 
-`oferta.html` y `retiro.html` leen de Supabase con la URL del proyecto y la
+`oferta.html`, `hoy.html` y `retiro.html` leen de Supabase con la URL del proyecto y la
 clave **pública**: lo que se puede leer con ella lo decide la base. Nunca va
 acá la `service_role`.
 
@@ -94,7 +95,7 @@ leen de la base de producción.
 
 ## Lo que cruza con el repo de la app
 
-- **`oferta.html` y `comercio.html` tienen una copia** en la app, en
+- **`oferta.html`, `comercio.html` y `hoy.html` tienen una copia** en la app, en
   `supabase/functions/compartir/testdata/`, para el test que comprueba que
   la vista previa se inyecta bien en las páginas de verdad. Si cambian acá,
   hay que volver a copiarlas allá.

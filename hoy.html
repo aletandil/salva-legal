@@ -1,0 +1,365 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Las ofertas de hoy en Salvá</title>
+<meta name="description" content="Lo que iba a tirarse, a precio rebajado, en los comercios de tu ciudad. Mirá las ofertas de hoy, reservalas en la app y retiralas en el local.">
+<!-- Open Graph: lo que muestra WhatsApp al pegar el link.
+     Éstas son las genéricas. Con el Worker de Cloudflare delante
+     (cloudflare/compartir en el repo de la app, 1431), se reemplazan por las
+     de la ciudad —"12 ofertas hoy en Tandil", con la fecha— antes de que
+     lleguen al robot de WhatsApp, que no corre JavaScript. Sin el Worker,
+     quedan éstas. -->
+<meta property="og:site_name" content="Salvá">
+<meta property="og:locale" content="es_AR">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Las ofertas de hoy en Salvá">
+<meta property="og:description" content="Lo que iba a tirarse, a precio rebajado, en los comercios de tu ciudad. Tocá para ver qué hay hoy.">
+<meta property="og:image" content="https://salvaapp.com.ar/compartir.jpg">
+<meta property="og:image:width" content="1024">
+<meta property="og:image:height" content="500">
+<meta property="og:image:alt" content="Salvá. Dale otra oportunidad.">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#06245E">
+<link rel="icon" href="icono.png">
+<link rel="stylesheet" href="estilo.css">
+<style>
+  /* Los mismos colores que oferta.html: es, como ella, la primera vez que
+     alguien ve Salvá. */
+  :root {
+    --primario: #0868DB; --marino: #06245E; --ambar: #E08A16;
+    --ambar-texto: #A15D00; --ambar-tinte: #FDF3E2; --sobre-primario: #fff;
+    --tinta: #0E1A33; --tinta-suave: #4D5A72; --fondo: #F6F9FD;
+    --papel: #FFFFFF; --borde: #DDE6F1; --alt: #EEF4FB;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --primario: #4AA3FF; --marino: #A9D4FF; --ambar: #F2A93B;
+      --ambar-texto: #F2A93B; --ambar-tinte: #33260F; --sobre-primario: #04122B;
+      --tinta: #E8EEF7; --tinta-suave: #A3B0C4; --fondo: #0A1328;
+      --papel: #111D36; --borde: #24324F; --alt: #182643;
+    }
+  }
+  body { background: var(--fondo); color: var(--tinta); }
+  main { max-width: 960px; }
+  .marca { display: flex; align-items: center; gap: 10px; margin: 20px 0 8px;
+           font-weight: 800; font-size: 20px; color: var(--tinta); text-decoration: none; }
+  .marca img { width: 32px; height: 32px; border-radius: 8px; }
+  h1 { font-size: 26px; margin: 16px 0 2px; }
+  .resumen { margin: 0 0 18px; color: var(--tinta-suave); font-size: 15px; }
+  /* De a una en el teléfono, de a dos o tres en la compu: la tarjeta no
+     baja de 260 px, que es lo que necesita el precio grande. */
+  .grilla { display: grid; gap: 14px; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            list-style: none; padding: 0; margin: 0; }
+  .oferta { background: var(--papel); border: 1px solid var(--borde); border-radius: 18px;
+            overflow: hidden; box-shadow: 0 4px 16px rgba(14,26,51,.05); }
+  .oferta a { color: inherit; text-decoration: none; display: block; height: 100%; }
+  .oferta.agotada .foto { filter: grayscale(1); opacity: .7; }
+  .foto { position: relative; aspect-ratio: 16 / 10; background:
+          linear-gradient(135deg, #0868DB, #06245E); }
+  .foto img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .foto .rubro { position: absolute; inset: 0; display: grid; place-items: center;
+                 color: #fff; font-weight: 800; font-size: 18px; text-align: center; padding: 12px; }
+  .descuento { position: absolute; top: 10px; left: 10px; background: #E08A16;
+               color: #2B1B02; font-weight: 800; font-size: 13px; padding: 3px 9px;
+               border-radius: 999px; }
+  .cuerpo { padding: 12px 16px 16px; }
+  .cuerpo h2 { font-size: 17px; line-height: 1.3; margin: 0 0 2px; }
+  .local { margin: 0; color: var(--tinta-suave); font-size: 14px; line-height: 1.4; }
+  .precios { display: flex; align-items: baseline; gap: 8px; margin: 10px 0 6px; flex-wrap: wrap; }
+  .precio { font-size: 22px; font-weight: 800; color: var(--marino); }
+  .antes { color: var(--tinta-suave); text-decoration: line-through; font-size: 14px; }
+  .retiro { display: inline-block; background: var(--ambar-tinte); color: var(--ambar-texto);
+            font-weight: 700; font-size: 13px; padding: 4px 10px; border-radius: 999px;
+            line-height: 1.4; }
+  .estado { margin: 8px 0 0; font-size: 13px; color: var(--tinta-suave); }
+  .botones { display: grid; gap: 10px; margin: 22px 0 8px; max-width: 480px; }
+  .boton { display: block; text-align: center; padding: 14px 16px; border-radius: 14px;
+           font-weight: 700; text-decoration: none; font-size: 16px; }
+  .boton.lleno { background: var(--primario); color: var(--sobre-primario); }
+  .boton.borde { border: 1px solid var(--borde); color: var(--primario); background: var(--papel); }
+  .boton.play { padding: 18px 16px; font-size: 18px; background: var(--marino); }
+  @media (prefers-color-scheme: dark) { .boton.play { color: #04122B; } }
+  .nota { font-size: 14px; color: var(--tinta-suave); max-width: 640px; }
+  .esqueleto { background: var(--alt); border-radius: 8px; height: 16px; margin: 8px 0; }
+  .tarjeta { background: var(--papel); border-color: var(--borde); max-width: 640px; }
+  [hidden] { display: none !important; }
+</style>
+<script>
+  // Las ofertas de hoy de una ciudad (1431 en el repo de la app).
+  //
+  // El link `hoy.html?ciudad=<slug>` lo manda la app ("Compartir las
+  // ofertas de hoy") para el grupo del barrio: quien lo abre casi nunca
+  // tiene la app. La página muestra lo que hay, cada oferta lleva a su
+  // página (`oferta.html`, que sabe abrir la app o mandar a Play), y abajo
+  // los dos botones.
+  //
+  // Lee `ofertas_de_hoy_en_la_web` con la anon key, como `oferta.html` lee
+  // `oferta_publica`: la anon key es pública por diseño, y la función sólo
+  // devuelve lo que el feed ya muestra sin cuenta.
+  //
+  // El slug no cambia: la app lo arma con el de la tabla `cities`, y un link
+  // que ya circula por WhatsApp tiene que seguir andando.
+  var SUPABASE_URL = 'https://jjlrlfykiqheiliyeuwk.supabase.co';
+  var SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImpqbHJsZnlraXFoZWlsaXlldXdrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODkxMzIzODQsImV4cCI6MjEwNDcwODM4NH0.7XpWeksD6BIPe0T02g6Qr5_be008a-Rfq4Z2E6TTxG0';
+  // Para probar contra la base local, como oferta.html:
+  // `hoy.html?ciudad=tandil&api=http://127.0.0.1:54321&key=<anon local>`.
+  // Sólo direcciones locales.
+  (function () {
+    var q = new URLSearchParams(location.search);
+    var api = q.get('api') || '';
+    if (/^http:\/\/(127\.0\.0\.1|localhost):\d+$/.test(api) && q.get('key')) {
+      SUPABASE_URL = api;
+      SUPABASE_ANON_KEY = q.get('key');
+    }
+  })();
+  var PAQUETE = 'com.oportia.salva';
+  // Con la ciudad en el referrer: Play lo guarda con la instalación, y así
+  // se mide cuántas instalaciones trae este link, y de qué ciudad.
+  function play(slug) {
+    return 'https://play.google.com/store/apps/details?id=' + PAQUETE +
+      '&referrer=' + encodeURIComponent('utm_source=compartir&utm_medium=hoy' +
+        (slug ? '&utm_content=' + slug : ''));
+  }
+  var IOS = /iPhone|iPad|iPod/i.test(navigator.userAgent) ||
+            (/Macintosh/i.test(navigator.userAgent) && navigator.maxTouchPoints > 1);
+  var ANDROID = /Android/i.test(navigator.userAgent);
+  var ZONA = 'America/Argentina/Buenos_Aires';
+
+  function texto(id, valor) { document.getElementById(id).textContent = valor; }
+  function mostrar(id) { document.getElementById(id).hidden = false; }
+  function ocultar(id) { document.getElementById(id).hidden = true; }
+
+  // A la argentina, como en la app: "$ 4.000", sin centavos. Los puntos a
+  // mano: no todos los navegadores traen `es-AR`, y sin él el precio salía
+  // con coma y se leía como otro.
+  function plata(n) {
+    var v = Math.round(Number(n));
+    return '$ ' + String(Math.abs(v)).replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+  }
+  // Por kilo (1150) se muestra el precio del kilo, como en la app: el de
+  // la base es el de la porción, y "$ 1.050" de algo que en la app dice
+  // "$ 2.100/kg" parecía otra oferta.
+  function precioDe(o, campo) {
+    if (o.vende_por === 'kilo' && o.gramos > 0) {
+      return plata(Number(o[campo]) * 1000 / o.gramos) + '/kg';
+    }
+    return plata(o[campo]);
+  }
+
+  function dia(d) {
+    return new Intl.DateTimeFormat('en-CA', { timeZone: ZONA, year: 'numeric', month: '2-digit', day: '2-digit' }).format(d);
+  }
+  function hora(d) {
+    return d.toLocaleTimeString('es-AR', { timeZone: ZONA, hour: '2-digit', minute: '2-digit', hour12: false });
+  }
+  function cuando(d) {
+    var hoy = new Date(), manana = new Date(Date.now() + 864e5);
+    return dia(d) === dia(hoy) ? 'hoy'
+      : dia(d) === dia(manana) ? 'mañana'
+      : d.toLocaleDateString('es-AR', { timeZone: ZONA, weekday: 'long', day: 'numeric', month: 'short' });
+  }
+  // Lo mismo que oferta.html, y una más: la que se retira en el horario del
+  // local (1350) no tiene una ventana sino un "hasta", y "hoy 14:00 a dom
+  // 21:00" se leía como que se podía pasar de madrugada.
+  function ventana(o) {
+    var a = new Date(o.retiro_desde), b = new Date(o.retiro_hasta);
+    var t = o.retiro_en_horario_del_local
+      ? 'En el horario del local, hasta ' + cuando(b)
+      : a <= new Date() ? 'Hasta ' + cuando(b) + ' a las ' + hora(b)
+      : dia(a) === dia(b) ? cuando(a) + ' de ' + hora(a) + ' a ' + hora(b)
+      : cuando(a) + ' ' + hora(a) + ' a ' + cuando(b) + ' ' + hora(b);
+    return t.charAt(0).toUpperCase() + t.slice(1);
+  }
+
+  // `salva://hoy/<slug>` abre la app en el inicio; en Android, por
+  // `intent:`, y si no está, Play.
+  function enlaceALaApp(slug) {
+    var camino = 'hoy/' + encodeURIComponent(slug);
+    if (ANDROID) {
+      return 'intent://' + camino + '#Intent;scheme=salva;package=' + PAQUETE +
+             ';S.browser_fallback_url=' + encodeURIComponent(play(slug)) + ';end';
+    }
+    return 'salva://' + camino;
+  }
+
+  // Sólo fotos de nuestro Storage: la URL viene de la base, pero una `img`
+  // con cualquier dirección es un rastreador servido desde acá.
+  function propia(url) {
+    return !!url && url.indexOf(SUPABASE_URL + '/storage/v1/object/public/') === 0;
+  }
+
+  // Con `textContent` y no armando HTML: el título y el nombre del local los
+  // escribe el comercio.
+  function el(etiqueta, clase, contenido) {
+    var e = document.createElement(etiqueta);
+    if (clase) e.className = clase;
+    if (contenido != null) e.textContent = contenido;
+    return e;
+  }
+
+  function tarjeta(o) {
+    var li = el('li', 'oferta' + (o.agotada ? ' agotada' : ''));
+    var a = el('a');
+    a.href = 'oferta.html?id=' + encodeURIComponent(o.id);
+    var foto = el('div', 'foto');
+    var url = o.foto || o.foto_del_comercio;
+    var rubro = el('div', 'rubro', o.rubro || 'Salvá');
+    if (propia(url)) {
+      var img = el('img');
+      img.alt = '';
+      img.loading = 'lazy';
+      img.onerror = function () { img.remove(); foto.appendChild(rubro); };
+      img.src = url;
+      foto.appendChild(img);
+    } else {
+      foto.appendChild(rubro);
+    }
+    if (o.descuento > 0 && !o.agotada) foto.appendChild(el('span', 'descuento', o.descuento + '% OFF'));
+    a.appendChild(foto);
+
+    var cuerpo = el('div', 'cuerpo');
+    cuerpo.appendChild(el('h2', null, o.titulo));
+    cuerpo.appendChild(el('p', 'local', o.comercio + (o.direccion ? ' · ' + o.direccion : '')));
+    var precios = el('div', 'precios');
+    precios.appendChild(el('span', 'precio', precioDe(o, 'precio')));
+    if (Number(o.precio_original) > Number(o.precio)) {
+      precios.appendChild(el('span', 'antes', precioDe(o, 'precio_original')));
+    }
+    cuerpo.appendChild(precios);
+    cuerpo.appendChild(el('span', 'retiro', ventana(o)));
+    cuerpo.appendChild(el('p', 'estado', o.agotada
+      ? 'Agotada por ahora'
+      : o.quedan === 1 ? 'Queda 1' : 'Quedan ' + o.quedan));
+    a.appendChild(cuerpo);
+    li.appendChild(a);
+    return li;
+  }
+
+  document.addEventListener('DOMContentLoaded', function () {
+    var slug = (new URLSearchParams(location.search).get('ciudad') || '').trim().toLowerCase();
+    var valido = /^[a-z0-9-]{1,60}$/.test(slug);
+    document.getElementById('bajar').href = play(valido ? slug : '');
+    if (IOS) {
+      ocultar('bajar');
+      mostrar('ios');
+      texto('abrir', 'Ya tengo la app: abrir');
+    }
+    if (!valido) {
+      ocultar('cargando');
+      mostrar('nosirve');
+      return;
+    }
+    var abrir = document.getElementById('abrir');
+    abrir.href = enlaceALaApp(slug);
+    abrir.hidden = false;
+
+    fetch(SUPABASE_URL + '/rest/v1/rpc/ofertas_de_hoy_en_la_web', {
+      method: 'POST',
+      headers: {
+        'apikey': SUPABASE_ANON_KEY,
+        'Authorization': 'Bearer ' + SUPABASE_ANON_KEY,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ p_ciudad: slug })
+    }).then(function (r) { return r.ok ? r.json() : Promise.reject(r.status); })
+      .then(function (r) {
+        ocultar('cargando');
+        if (!r || !r.ciudad) { mostrar('nosirve'); return; }
+        var ciudad = r.ciudad.nombre;
+        mostrar('titulo');
+        // Una próxima no tiene "ofertas de hoy": decirlo en el título sería
+        // prometer una lista que no viene.
+        if (!r.ciudad.disponible) {
+          document.title = 'Salvá en ' + ciudad;
+          texto('titulo', 'Salvá en ' + ciudad);
+          texto('proxima-ciudad', ciudad);
+          mostrar('proxima');
+          return;
+        }
+        document.title = 'Las ofertas de hoy en ' + ciudad + ' · Salvá';
+        texto('titulo', 'Las ofertas de hoy en ' + ciudad);
+        if (!r.ofertas.length) {
+          texto('vacia-ciudad', ciudad);
+          mostrar('vacia');
+          return;
+        }
+        var n = r.total;
+        texto('resumen', (n === 1 ? '1 oferta' : n + ' ofertas') +
+          (r.precio_desde != null ? ', desde ' + plata(r.precio_desde) : '') +
+          '. Tocá una para verla.');
+        mostrar('resumen');
+        var grilla = document.getElementById('grilla');
+        r.ofertas.forEach(function (o) { grilla.appendChild(tarjeta(o)); });
+        mostrar('grilla');
+        // La página muestra 60; el resto, en la app.
+        if (n > r.ofertas.length) {
+          texto('mas', 'Hay ' + (n - r.ofertas.length) + ' más en la app.');
+          mostrar('mas');
+        }
+      })
+      .catch(function () {
+        ocultar('cargando');
+        mostrar('error');
+      });
+  });
+</script>
+</head>
+<body>
+<main>
+  <a class="marca" href="index.html"><img src="icono.png" alt="">Salvá</a>
+  <h1 id="titulo" hidden></h1>
+  <p class="resumen" id="resumen" hidden></p>
+
+  <ul class="grilla" id="cargando" aria-busy="true">
+    <li class="oferta"><div class="foto"></div><div class="cuerpo">
+      <div class="esqueleto" style="width:70%"></div><div class="esqueleto" style="width:45%"></div>
+      <div class="esqueleto" style="width:30%;height:22px"></div></div></li>
+    <li class="oferta"><div class="foto"></div><div class="cuerpo">
+      <div class="esqueleto" style="width:60%"></div><div class="esqueleto" style="width:40%"></div>
+      <div class="esqueleto" style="width:30%;height:22px"></div></div></li>
+  </ul>
+
+  <ul class="grilla" id="grilla" hidden></ul>
+  <p class="nota" id="mas" hidden></p>
+
+  <div class="tarjeta" id="vacia" hidden>
+    <p style="margin-top:0"><strong>Hoy todavía no hay ofertas en <span id="vacia-ciudad"></span>.</strong></p>
+    <p style="margin-bottom:0">Los comercios publican lo que les queda casi
+    siempre cerca del cierre. Volvé a mirar más tarde, o bajá la app y seguí a
+    tus locales: te avisamos cuando publican.</p>
+  </div>
+
+  <div class="tarjeta" id="proxima" hidden>
+    <p style="margin-top:0"><strong>Salvá todavía no llegó a <span id="proxima-ciudad"></span>.</strong></p>
+    <p style="margin-bottom:0">Estamos por llegar. Bajá la app y tocá
+    "Avisame" en tu ciudad: cuantos más se anoten, antes llegamos, y te
+    avisamos el día que abre.</p>
+  </div>
+
+  <div class="tarjeta" id="nosirve" hidden>
+    <p style="margin-top:0"><strong>No encontramos esa ciudad.</strong></p>
+    <p style="margin-bottom:0">Puede que el link esté incompleto. En la app
+    ves las ofertas de tu ciudad, y si todavía no llegamos, podés pedirla.</p>
+  </div>
+
+  <div class="tarjeta" id="error" hidden>
+    <p style="margin:0">No pudimos cargar las ofertas. Revisá tu conexión y
+    volvé a abrir el link.</p>
+  </div>
+
+  <div class="botones">
+    <a class="boton lleno play" id="bajar" href="https://play.google.com/store/apps/details?id=com.oportia.salva">Bajar de Google Play</a>
+    <a class="boton borde" id="abrir" hidden href="#">Abrir en la app</a>
+  </div>
+  <p class="nota" id="ios" hidden>Salvá todavía no está en el App Store: por
+  ahora es sólo para Android. Podés ver las ofertas acá e ir directo al local,
+  o pasarle el link a alguien con Android.</p>
+  <p class="nota"><strong>Salvá</strong> es lo que iba a tirarse, a precio
+  rebajado. Comercios de tu ciudad publican ofertas de lo que tiene
+  vencimiento; vos lo reservás, lo pagás y lo retirás.</p>
+</main>
+<footer>Salvá · <a href="privacidad.html">Privacidad</a> · <a href="terminos.html">Términos</a></footer>
+</body>
+</html>
