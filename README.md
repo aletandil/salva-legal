@@ -34,6 +34,8 @@ editar creyendo que era la web.
 | Archivo | Qué es |
 |---|---|
 | `index.html`, `portada.css`, `portada.js` | La portada |
+| `para-comercios.html` | Todo para comercios: la promo, publicar, entregar, cobrar. Usa `portada.css` y `portada.js`. Se llama así y no `comercios.html` para no confundirse con `comercio.html` (la de un local) |
+| `img/app/captura-*.webp` | Capturas de la app, de sus tests de capturas (`test/widget/capturas_del_comprador_test.dart` y `capturas_del_panel_test.dart`, con `--dart-define=CAPTURAS=<carpeta>`), con datos de ejemplo. Cada una en claro y oscuro, a 786 y 393 de ancho |
 | `404.html` | La página de "no está" |
 | `estilo.css`, `fuentes/`, `img/`, íconos | Lo compartido |
 | `sitemap.xml`, `robots.txt` | Para buscadores |
@@ -118,4 +120,12 @@ y la app juntos.
 
 Lo que sí está decidido es la promo de lanzamiento: los primeros 2 meses de
 cada local, desde que se aprueba, sin comisión (en la app, la migración
-1240). La portada la dice, sin el porcentaje de después.
+1240). La portada y `para-comercios.html` la dicen, sin el porcentaje de
+después: 2 meses desde que se aprueba el local, sin comisión de Salvá también
+en lo cobrado en el mostrador, y Mercado Pago cobra lo suyo aparte. El código
+no tiene fecha límite para sumarse, así que el sitio no promete ninguna.
+
+Las funciones nuevas que cuenta el sitio (mapa, alertas, "Mis productos",
+"Por vencer", modo mostrador, "Tu año salvando"…) están en la app; antes de
+publicar el sitio, que la versión de la app que las trae y sus migraciones
+estén en producción.

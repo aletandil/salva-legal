@@ -1,7 +1,8 @@
-// La portada: entradas al hacer scroll, el precio que se tacha y la reserva
-// del teléfono, la cabecera que gana borde al bajar, el menú del teléfono, el
-// recorrido de "Cómo funciona", la sección del menú en la que estás y los
-// botones del App Store.
+// La portada y la página para comercios: entradas al hacer scroll, el precio
+// que se tacha y la reserva del teléfono (que termina en el ticket), los QR
+// de las pantallitas, la cabecera que gana borde al bajar, el menú del
+// teléfono, el recorrido de "Cómo funciona", la sección del menú en la que
+// estás y los botones del App Store.
 //
 // Nada de esto es necesario para leer la página: sin JS, todo está visible
 // desde el principio (el CSS sólo esconde con `.js`), y con "reducir
@@ -24,8 +25,36 @@
     });
   }
 
+  // ----- Los QR de las pantallitas -----
+  // Un QR de mentira pero con cara de QR: los tres cuadrados de las esquinas,
+  // las líneas de sincronía y el resto salpicado a partir del código, así
+  // cada ticket tiene el suyo y sale igual en cada visita. No se puede
+  // escanear, y no hace falta: es un dibujo. Sin JS queda el ícono de QR.
+  function dibujarQr(el) {
+    var texto = el.getAttribute('data-qr') || 'SALVA';
+    var semilla = 7;
+    for (var k = 0; k < texto.length; k++) semilla = (semilla * 31 + texto.charCodeAt(k)) >>> 0;
+    function azar() { semilla = (semilla * 1664525 + 1013904223) >>> 0; return semilla / 4294967296; }
+    var n = 25, d = '';
+    function enEsquina(x, y) { return (x < 8 && y < 8) || (x > n - 9 && y < 8) || (x < 8 && y > n - 9); }
+    function ojo(x, y) { d += 'M' + x + ' ' + y + 'h7v7h-7zM' + (x + 1) + ' ' + (y + 1) + 'v5h5v-5zM' + (x + 2) + ' ' + (y + 2) + 'h3v3h-3z'; }
+    ojo(0, 0); ojo(n - 7, 0); ojo(0, n - 7);
+    for (var y = 0; y < n; y++) {
+      for (var x = 0; x < n; x++) {
+        if (enEsquina(x, y)) continue;
+        var lleno = (x === 6 || y === 6) ? (x + y) % 2 === 0 : azar() < 0.48;
+        if (lleno) d += 'M' + x + ' ' + y + 'h1v1h-1z';
+      }
+    }
+    el.innerHTML = '<svg viewBox="0 0 ' + n + ' ' + n + '" shape-rendering="crispEdges" aria-hidden="true"><path fill-rule="evenodd" d="' + d + '"/></svg>';
+  }
+  document.querySelectorAll('[data-qr]').forEach(dibujarQr);
+
+  var mueve = !(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+
   // ----- Cabecera -----
   var cabecera = document.getElementById('cabecera');
+  if (!cabecera) return;
   function borde() { cabecera.classList.toggle('con-borde', window.scrollY > 8); }
   window.addEventListener('scroll', borde, { passive: true });
   borde();
@@ -80,12 +109,16 @@
   var tachables = document.querySelectorAll('[data-tachar]');
 
   // Después del tachado, en el teléfono alguien reserva: sale la
-  // confirmación y queda una menos.
+  // confirmación, queda una menos y sube el ticket con el QR. Con "reducir
+  // movimiento" el teléfono se queda en el listado: el ticket sólo tiene
+  // sentido como el final de algo que se movió.
   function tachar(el, demora) {
     setTimeout(function () {
       el.classList.add('tachado');
       var telefono = el.closest('.telefono');
-      if (telefono) setTimeout(function () { telefono.classList.add('reservado'); }, 1700);
+      if (!telefono) return;
+      setTimeout(function () { telefono.classList.add('reservado'); }, 1700);
+      if (mueve) setTimeout(function () { telefono.classList.add('con-ticket'); }, 3900);
     }, demora);
   }
 
