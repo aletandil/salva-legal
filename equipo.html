@@ -6,10 +6,21 @@
 <!-- El token va después del #: no viaja al servidor ni a la vista previa. -->
 <meta name="robots" content="noindex">
 <meta name="referrer" content="no-referrer">
-<title>Invitación al equipo · Salvá</title>
-<meta property="og:title" content="Te invitaron al equipo de un local en Salvá">
-<meta property="og:description" content="Abrí el link desde el teléfono para sumarte.">
+<title>Invitación a un local · Salvá</title>
+<!-- La misma tarjeta que oferta.html: sin og:image, WhatsApp mostraba el
+     link pelado, sin el logo, y parecía cualquier cosa. El texto sirve para
+     las dos invitaciones que usan esta página: sumarse al equipo y recibir
+     el local que dejó cargado un vendedor de Salvá. -->
+<meta property="og:site_name" content="Salvá">
+<meta property="og:locale" content="es_AR">
 <meta property="og:type" content="website">
+<meta property="og:title" content="Te invitaron a un local en Salvá">
+<meta property="og:description" content="Tocá el link desde el teléfono para sumarte con tu cuenta. Si no tenés la app, te decimos cómo bajarla.">
+<meta property="og:image" content="https://salvaapp.com.ar/compartir.jpg">
+<meta property="og:image:width" content="1024">
+<meta property="og:image:height" content="500">
+<meta property="og:image:alt" content="Salvá. Dale otra oportunidad.">
+<meta name="twitter:card" content="summary_large_image">
 <link rel="stylesheet" href="estilo.css">
 <script>
   document.addEventListener('DOMContentLoaded', function () {
@@ -25,12 +36,13 @@
 </head>
 <body>
 <main>
-  <h1 style="margin-top:56px">Te invitaron a un equipo</h1>
+  <h1 style="margin-top:56px">Te invitaron a un local</h1>
 
   <div class="tarjeta" id="invitacion" hidden>
-    <p style="margin-top:0">Un local de Salvá te sumó a su equipo. Abrí la
-    invitación en la app: ahí ves de qué local es y con qué rol, y la
-    aceptás con tu cuenta (si no tenés, la creás).</p>
+    <p style="margin-top:0">Te sumaron a un local de Salvá: a su equipo, o
+    para que te quedes con el local que te dejaron cargado. Abrí la
+    invitación en la app: ahí ves de qué local es, y la aceptás con tu
+    cuenta (si no tenés, la creás).</p>
     <p style="margin-bottom:0"><a id="abrir" href="#"><strong>Abrir en la app</strong></a></p>
   </div>
 
