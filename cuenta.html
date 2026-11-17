@@ -114,12 +114,14 @@
   </div>
 
   <div class="botones" id="bajar" hidden>
-    <a class="boton borde" href="https://play.google.com/store/apps/details?id=com.oportia.salva">¿No tenés la app? Bajala de Google Play</a>
+    <a class="boton borde" id="app-store" href="#">¿No tenés la app? Bajala del App Store</a>
   </div>
   <p class="nota">¿Algo no anduvo? Escribinos a
     <a href="mailto:soporte@salvaapp.com.ar">soporte@salvaapp.com.ar</a>.</p>
 </main>
 <footer>Salvá · <a href="https://salvaapp.com.ar/">salvaapp.com.ar</a></footer>
+<!-- La dirección del App Store (window.SALVA_APP_STORE) vive en tiendas.js. -->
+<script src="tiendas.js"></script>
 <script>
   (function () {
     var p = new URLSearchParams(location.search);
@@ -145,7 +147,11 @@
 
     var tarjeta = error ? 'vencido' : tipo === 'alta' ? 'alta' : tipo === 'clave' ? 'clave' : 'general';
     document.getElementById(tarjeta).hidden = false;
-    document.getElementById('bajar').hidden = !telefono || android;
+    // Sólo en iPhone: en Android el `intent:` ya cae en Play si no está la
+    // app. Sin la dirección del App Store (tiendas.js no cargó), sin botón.
+    var appStore = window.SALVA_APP_STORE || '';
+    document.getElementById('app-store').href = appStore;
+    document.getElementById('bajar').hidden = !telefono || android || !appStore;
     var botones = document.querySelectorAll('[data-abrir]');
     for (var i = 0; i < botones.length; i++) {
       botones[i].href = destino;

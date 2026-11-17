@@ -79,10 +79,23 @@
     <p class="bajada">Puede que el link haya llegado cortado, o que lo que buscabas ya no exista: las ofertas duran unas horas y después se van. Lo de hoy está en la app.</p>
     <div class="acciones">
       <a class="boton" href="/">Ir al inicio</a>
-      <a class="boton boton-suave" href="https://play.google.com/store/apps/details?id=com.oportia.salva">Ver las ofertas en la app</a>
+      <a class="boton boton-suave" id="ver-en-la-app" href="https://play.google.com/store/apps/details?id=com.oportia.salva">Ver las ofertas en la app</a>
     </div>
     <p class="ayuda">¿Te mandaron este link y no anda? Escribinos a <a href="mailto:soporte@salvaapp.com.ar">soporte@salvaapp.com.ar</a>.</p>
   </div>
 </main>
+<!-- Absoluta: esta página se sirve en cualquier ruta que no exista. La
+     dirección del App Store vive en tiendas.js. -->
+<script src="/tiendas.js"></script>
+<script>
+  // En iPhone y iPad, a la ficha del App Store en vez de a Play.
+  (function () {
+    var ios = /iPhone|iPad|iPod/i.test(navigator.userAgent) ||
+              (/Macintosh/i.test(navigator.userAgent) && navigator.maxTouchPoints > 1);
+    if (ios && window.SALVA_APP_STORE) {
+      document.getElementById('ver-en-la-app').href = window.SALVA_APP_STORE;
+    }
+  })();
+</script>
 </body>
 </html>

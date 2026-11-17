@@ -11,10 +11,17 @@
   'use strict';
 
   // ----- App Store -----
-  // La URL vive en un solo lugar, en el <head> de index.html. Mientras esté
-  // vacía, los botones quedan como "Próximamente" y no son links.
+  // La URL vive en un solo lugar, tiendas.js, que se carga antes que este
+  // archivo. El HTML trae los botones como <span> y acá se vuelven links: así
+  // la URL no se repite en cada botón. Si tiendas.js no está o la deja
+  // vacía, quedan como "Próximamente" y no llevan a ningún lado.
   var appStore = (window.SALVA_APP_STORE || '').trim();
-  if (/^https:\/\/apps\.apple\.com\//.test(appStore)) {
+  if (!/^https:\/\/apps\.apple\.com\//.test(appStore)) {
+    document.querySelectorAll('[data-app-store]').forEach(function (el) {
+      el.setAttribute('aria-disabled', 'true');
+      el.querySelector('small').textContent = 'Próximamente en';
+    });
+  } else {
     document.querySelectorAll('[data-app-store]').forEach(function (el) {
       var a = document.createElement('a');
       a.className = el.className;

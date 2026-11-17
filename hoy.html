@@ -24,6 +24,9 @@
 <meta name="theme-color" content="#06245E">
 <link rel="icon" href="icono.png">
 <link rel="stylesheet" href="estilo.css">
+<!-- La dirección del App Store (window.SALVA_APP_STORE) vive en tiendas.js.
+     Con defer corre antes del DOMContentLoaded de abajo. -->
+<script src="tiendas.js" defer></script>
 <style>
   /* Los mismos colores que oferta.html: es, como ella, la primera vez que
      alguien ve Salvá. */
@@ -122,6 +125,8 @@
       '&referrer=' + encodeURIComponent('utm_source=compartir&utm_medium=hoy' +
         (slug ? '&utm_content=' + slug : ''));
   }
+  // iPhone y iPad (los iPad nuevos se presentan como Mac con pantalla
+  // táctil): ahí el botón de bajar va al App Store, sin referrer.
   var IOS = /iPhone|iPad|iPod/i.test(navigator.userAgent) ||
             (/Macintosh/i.test(navigator.userAgent) && navigator.maxTouchPoints > 1);
   var ANDROID = /Android/i.test(navigator.userAgent);
@@ -242,8 +247,15 @@
     var valido = /^[a-z0-9-]{1,60}$/.test(slug);
     document.getElementById('bajar').href = play(valido ? slug : '');
     if (IOS) {
-      ocultar('bajar');
-      mostrar('ios');
+      var appStore = window.SALVA_APP_STORE || '';
+      // Sin la dirección (tiendas.js no cargó), mejor sin botón que uno que
+      // mande a Play desde un iPhone.
+      if (appStore) {
+        document.getElementById('bajar').href = appStore;
+        texto('bajar', 'Bajala del App Store');
+      } else {
+        ocultar('bajar');
+      }
       texto('abrir', 'Ya tengo la app: abrir');
     }
     if (!valido) {
@@ -353,9 +365,6 @@
     <a class="boton lleno play" id="bajar" href="https://play.google.com/store/apps/details?id=com.oportia.salva">Bajar de Google Play</a>
     <a class="boton borde" id="abrir" hidden href="#">Abrir en la app</a>
   </div>
-  <p class="nota" id="ios" hidden>Salvá todavía no está en el App Store: por
-  ahora es sólo para Android. Podés ver las ofertas acá e ir directo al local,
-  o pasarle el link a alguien con Android.</p>
   <p class="nota"><strong>Salvá</strong> es lo que iba a tirarse, a precio
   rebajado. Comercios de tu ciudad publican ofertas de lo que tiene
   vencimiento; vos lo reservás, lo pagás y lo retirás.</p>

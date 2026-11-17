@@ -14,6 +14,9 @@
 <meta property="og:image:height" content="500">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="stylesheet" href="estilo.css">
+<!-- La dirección del App Store (window.SALVA_APP_STORE) vive en tiendas.js.
+     Con defer corre antes del DOMContentLoaded de abajo. -->
+<script src="tiendas.js" defer></script>
 <style>
   .botones { display: grid; gap: 10px; margin: 20px 0 8px; }
   .boton { display: block; text-align: center; padding: 14px 16px; border-radius: 14px;
@@ -43,6 +46,9 @@
       '&referrer=' + encodeURIComponent('utm_source=compartir&utm_medium=local' +
         (id ? '&utm_content=' + id : ''));
   }
+  // iPhone y iPad (los iPad nuevos se presentan como Mac con pantalla
+  // táctil): ahí el botón de bajar va al App Store. La ficha de Apple no
+  // tiene referrer, así que de iPhone no se sabe qué cartel trajo a quién.
   var IOS = /iPhone|iPad|iPod/i.test(navigator.userAgent) ||
             (/Macintosh/i.test(navigator.userAgent) && navigator.maxTouchPoints > 1);
   var ANDROID = /Android/i.test(navigator.userAgent);
@@ -53,10 +59,15 @@
     var bajar = document.getElementById('bajar');
     bajar.href = play(valido ? id : '');
     if (IOS) {
-      // Salvá no está en el App Store: se dice, en vez de mandar a una
-      // tienda que no la tiene.
-      bajar.hidden = true;
-      document.getElementById('ios').hidden = false;
+      var appStore = window.SALVA_APP_STORE || '';
+      // Sin la dirección (tiendas.js no cargó), mejor sin botón que uno que
+      // mande a Play desde un iPhone.
+      if (appStore) {
+        bajar.href = appStore;
+        bajar.textContent = 'Bajala del App Store';
+      } else {
+        bajar.hidden = true;
+      }
     }
     if (!valido) return;
     var abrir = document.getElementById('abrir');
@@ -84,8 +95,6 @@
     <a class="boton lleno play" id="bajar" href="https://play.google.com/store/apps/details?id=com.oportia.salva">Descargar en Google Play</a>
     <a class="boton borde" id="abrir" hidden href="#">Abrir en la app</a>
   </div>
-  <p id="ios" hidden style="color:var(--tinta-suave);font-size:14px">Salvá
-  todavía no está en el App Store: por ahora es sólo para Android.</p>
 </main>
 <footer>Salvá · <a href="privacidad.html">Privacidad</a> · <a href="terminos.html">Términos</a></footer>
 </body>
