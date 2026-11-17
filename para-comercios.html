@@ -30,9 +30,9 @@
 <link rel="stylesheet" href="portada.css">
 <script>
   document.documentElement.classList.add('js');
-  // La misma de index.html: vacía hasta que Apple apruebe la app.
-  window.SALVA_APP_STORE = '';
 </script>
+<!-- La dirección del App Store vive en tiendas.js, antes que portada.js. -->
+<script src="tiendas.js" defer></script>
 <script src="portada.js" defer></script>
 <script type="application/ld+json">
 {
@@ -467,9 +467,9 @@
             <a class="tienda tienda-play" href="https://play.google.com/store/apps/details?id=com.oportia.salva">
               <img src="img/google-play-es-290.webp" srcset="img/google-play-es-290.webp 290w, img/google-play-es.png 646w" sizes="145px" width="646" height="250" loading="lazy" alt="Disponible en Google Play">
             </a>
-            <span class="tienda tienda-ios" data-app-store aria-disabled="true">
+            <span class="tienda tienda-ios" data-app-store>
               <svg class="icono" aria-hidden="true"><use href="#i-telefono"/></svg>
-              <span><small>Próximamente en</small><b>App Store</b></span>
+              <span><small>Descargalo en</small><b>App Store</b></span>
             </span>
           </div>
         </div>

@@ -38,6 +38,7 @@ editar creyendo que era la web.
 | `img/app/captura-*.webp` | Capturas de la app, de sus tests de capturas (`test/widget/capturas_del_comprador_test.dart` y `capturas_del_panel_test.dart`, con `--dart-define=CAPTURAS=<carpeta>`), con datos de ejemplo. Cada una en claro y oscuro, a 786 y 393 de ancho |
 | `404.html` | La página de "no está" |
 | `estilo.css`, `fuentes/`, `img/`, íconos | Lo compartido |
+| `tiendas.js` | La dirección de la ficha del App Store (`window.SALVA_APP_STORE`), en un solo lugar: la usan la portada y `para-comercios.html` (vía `portada.js`), `oferta.html`, `comercio.html`, `hoy.html`, `cuenta.html` y `404.html`. Lo único que la repite es el JSON-LD de `index.html`, que no puede leer JS |
 | `sitemap.xml`, `robots.txt` | Para buscadores |
 
 **Legales.** Las lee Play y las linkea la app (`lib/core/config/sitio.dart`
@@ -57,9 +58,9 @@ la app. El diseño se puede tocar.
 
 | Página | Quién la abre | Qué hace |
 |---|---|---|
-| `oferta.html?id=…` | Link de "Compartir oferta" | Muestra la oferta y lleva a la app o a Play |
-| `comercio.html?id=…` | Link de un local y el QR del cartel | Muestra el local y lleva a la app o a Play |
-| `hoy.html?ciudad=…` | "Compartir las ofertas de hoy" (el slug de la ciudad) | Muestra las ofertas vigentes de la ciudad y lleva a la app o a Play |
+| `oferta.html?id=…` | Link de "Compartir oferta" | Muestra la oferta y lleva a la app, a Play o, en iPhone, al App Store |
+| `comercio.html?id=…` | Link de un local y el QR del cartel | Muestra el local y lleva a la app, a Play o, en iPhone, al App Store |
+| `hoy.html?ciudad=…` | "Compartir las ofertas de hoy" (el slug de la ciudad) | Muestra las ofertas vigentes de la ciudad y lleva a la app, a Play o, en iPhone, al App Store |
 | `retiro.html#…` | "Retira otra persona" | Muestra el código y el QR de una compra |
 | `equipo.html#…` | Invitación al equipo de un local | Abre la app con la invitación |
 | `cuenta.html?tipo=…` | Links de los mails de cuenta (Supabase) | Dice si la cuenta quedó confirmada o la contraseña cambiada y abre la app |

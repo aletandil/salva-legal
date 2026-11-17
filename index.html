@@ -33,14 +33,10 @@
   // Antes de pintar: con JS, lo que entra al hacer scroll arranca escondido.
   // Sin JS no se esconde nada.
   document.documentElement.classList.add('js');
-
-  // La dirección de Salvá en el App Store. Vacía mientras la app de iPhone
-  // no esté aprobada: los botones dicen "Próximamente" y no llevan a ningún
-  // lado. La app ya tiene la suya cargada (lib/core/config/sitio.dart), pero
-  // hasta que Apple la apruebe esa página dice "no disponible": no se pega
-  // acá antes. El día que esté, se pega y se activan todos solos.
-  window.SALVA_APP_STORE = '';
 </script>
+<!-- La dirección del App Store vive en tiendas.js; tiene que ir antes que
+     portada.js, que la usa para convertir los botones en links. -->
+<script src="tiendas.js" defer></script>
 <script src="portada.js" defer></script>
 <script type="application/ld+json">
 {
@@ -55,7 +51,7 @@
       "slogan": "Dale otra oportunidad.",
       "email": "soporte@salvaapp.com.ar",
       "areaServed": "AR",
-      "sameAs": ["https://play.google.com/store/apps/details?id=com.oportia.salva"],
+      "sameAs": ["https://play.google.com/store/apps/details?id=com.oportia.salva", "https://apps.apple.com/ar/app/id6832731397"],
       "contactPoint": {
         "@type": "ContactPoint",
         "contactType": "customer support",
@@ -74,12 +70,12 @@
     {
       "@type": "MobileApplication",
       "name": "Salvá",
-      "operatingSystem": "Android",
+      "operatingSystem": "Android, iOS",
       "applicationCategory": "ShoppingApplication",
       "description": "Ofertas de lo que a los comercios les sobró o está por vencer, a precio rebajado. Se reservan en la app y se pasan a buscar por el local.",
       "url": "https://salvaapp.com.ar/",
-      "installUrl": "https://play.google.com/store/apps/details?id=com.oportia.salva",
-      "downloadUrl": "https://play.google.com/store/apps/details?id=com.oportia.salva",
+      "installUrl": ["https://play.google.com/store/apps/details?id=com.oportia.salva", "https://apps.apple.com/ar/app/id6832731397"],
+      "downloadUrl": ["https://play.google.com/store/apps/details?id=com.oportia.salva", "https://apps.apple.com/ar/app/id6832731397"],
       "inLanguage": "es-AR",
       "publisher": { "@id": "https://salvaapp.com.ar/#organizacion" },
       "offers": { "@type": "Offer", "price": "0", "priceCurrency": "ARS" }
@@ -207,9 +203,9 @@
           <a class="tienda tienda-play" href="https://play.google.com/store/apps/details?id=com.oportia.salva">
             <img src="img/google-play-es-290.webp" srcset="img/google-play-es-290.webp 290w, img/google-play-es.png 646w" sizes="145px" width="646" height="250" alt="Disponible en Google Play">
           </a>
-          <span class="tienda tienda-ios" data-app-store aria-disabled="true">
+          <span class="tienda tienda-ios" data-app-store>
             <svg class="icono" aria-hidden="true"><use href="#i-telefono"/></svg>
-            <span><small>Próximamente en</small><b>App Store</b></span>
+            <span><small>Descargalo en</small><b>App Store</b></span>
           </span>
         </div>
         <ul class="beneficios" data-entrada style="--i:5">
@@ -691,9 +687,9 @@
             <a class="tienda tienda-play" href="https://play.google.com/store/apps/details?id=com.oportia.salva">
               <img src="img/google-play-es-290.webp" srcset="img/google-play-es-290.webp 290w, img/google-play-es.png 646w" sizes="145px" width="646" height="250" loading="lazy" alt="Disponible en Google Play">
             </a>
-            <span class="tienda tienda-ios" data-app-store aria-disabled="true">
+            <span class="tienda tienda-ios" data-app-store>
               <svg class="icono" aria-hidden="true"><use href="#i-telefono"/></svg>
-              <span><small>Próximamente en</small><b>App Store</b></span>
+              <span><small>Descargalo en</small><b>App Store</b></span>
             </span>
           </div>
         </div>
@@ -755,7 +751,7 @@
           <details><summary>¿Cómo lo paso a buscar?</summary><p>Pasá por el local en el horario que dice la oferta y mostrá el código o el QR de tu reserva. Si no podés ir vos, compartí el ticket: el link sirve sólo para ese retiro.</p></details>
           <details><summary>¿Puedo cancelar?</summary><p>Sí, dentro de los 10 minutos de haber pagado y antes de que empiece el horario para pasar a buscarlo: te devolvemos el 100%. Si cancela el comercio, también te devolvemos el 100%.</p></details>
           <details><summary>¿Y si no llego a pasar a buscarlo?</summary><p>No hay devolución: el comercio te lo preparó y te lo guardó, y a esa hora ya no lo puede vender.</p></details>
-          <details><summary>¿Está para iPhone?</summary><p>Todavía no. Hoy Salvá está en Google Play para Android; la de iPhone viene en camino.</p></details>
+          <details><summary>¿Está para iPhone?</summary><p>Sí. Salvá está en el App Store para iPhone y en Google Play para Android.</p></details>
         </div>
         <div data-entrada style="--i:1">
           <h3>Si tenés un comercio</h3>
@@ -784,9 +780,9 @@
         <a class="tienda tienda-play" href="https://play.google.com/store/apps/details?id=com.oportia.salva">
           <img src="img/google-play-es-290.webp" srcset="img/google-play-es-290.webp 290w, img/google-play-es.png 646w" sizes="145px" width="646" height="250" loading="lazy" alt="Disponible en Google Play">
         </a>
-        <span class="tienda tienda-ios" data-app-store aria-disabled="true">
+        <span class="tienda tienda-ios" data-app-store>
           <svg class="icono" aria-hidden="true"><use href="#i-telefono"/></svg>
-          <span><small>Próximamente en</small><b>App Store</b></span>
+          <span><small>Descargalo en</small><b>App Store</b></span>
         </span>
       </div>
       <p class="cierre-comercio">¿Tenés un local? <a href="para-comercios.html">Mirá todo lo que trae Salvá para comercios</a>.</p>
