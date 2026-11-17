@@ -19,7 +19,7 @@ editar creyendo que era la web.
 - `.nojekyll` hace que GitHub Pages publique `.well-known/` (sin él, Jekyll
   ignora las carpetas que empiezan con punto). No borrarlo.
 - **Cloudflare** está delante: tiene el DNS del dominio y el reenvío de
-  `soporte@salvaapp.com.ar`. Para las rutas `/oferta*`, `/comercio*` y `/hoy*` hay
+  `soporte@salvaapp.com.ar`. Para las rutas `/oferta*`, `/comercio*`, `/hoy*` y `/sitemap.xml` hay
   además un Worker (código en el repo de la app, `cloudflare/compartir/`)
   que le pone a la página la vista previa de esa oferta o ese local para
   WhatsApp. Si el Worker y el proxy de Cloudflare ya están prendidos es un
@@ -38,7 +38,8 @@ editar creyendo que era la web.
 | `img/app/captura-*.webp` | Capturas de la app, de sus tests de capturas (`test/widget/capturas_del_comprador_test.dart` y `capturas_del_panel_test.dart`, con `--dart-define=CAPTURAS=<carpeta>`), con datos de ejemplo. Cada una en claro y oscuro, a 786 y 393 de ancho |
 | `404.html` | La página de "no está" |
 | `estilo.css`, `fuentes/`, `img/`, íconos | Lo compartido |
-| `tiendas.js` | La dirección de la ficha del App Store (`window.SALVA_APP_STORE`), en un solo lugar: la usan la portada y `para-comercios.html` (vía `portada.js`), `oferta.html`, `comercio.html`, `hoy.html`, `cuenta.html` y `404.html`. Lo único que la repite es el JSON-LD de `index.html`, que no puede leer JS |
+| `tiendas.js` | La dirección de la ficha del App Store (`window.SALVA_APP_STORE`), en un solo lugar: la usan la portada y `para-comercios.html` (vía `portada.js`), `oferta.html`, `comercio.html`, `hoy.html`, `cuenta.html` y `404.html`. Lo único que la repite es el JSON-LD de `index.html`, que no puede leer JS, y el `href` inicial del botón del App Store en `hoy.html` y `comercio.html`, para quien no corre JS (el script lo pisa con el de acá) |
+| `ofertas.js`, `ofertas.css` | Lo que comparten `hoy.html` y `comercio.html`: la tarjeta de oferta, la fila de local, los links a las tiendas con sus UTM y el pedido a la base. El HTML que arma `ofertas.js` es el mismo que arma el servidor (ver "Lo que cruza con el repo de la app") |
 | `sitemap.xml`, `robots.txt` | Para buscadores |
 
 **Legales.** Las lee Play y las linkea la app (`lib/core/config/sitio.dart`
@@ -59,8 +60,8 @@ la app. El diseño se puede tocar.
 | Página | Quién la abre | Qué hace |
 |---|---|---|
 | `oferta.html?id=…` | Link de "Compartir oferta" | Muestra la oferta y lleva a la app, a Play o, en iPhone, al App Store |
-| `comercio.html?id=…` | Link de un local y el QR del cartel | Muestra el local y lleva a la app, a Play o, en iPhone, al App Store |
-| `hoy.html?ciudad=…` | "Compartir las ofertas de hoy" (el slug de la ciudad) | Muestra las ofertas vigentes de la ciudad y lleva a la app, a Play o, en iPhone, al App Store |
+| `comercio.html?id=…` | Link de un local y el QR del cartel | Muestra el local con sus ofertas abiertas y lleva a la app, a Play o al App Store |
+| `hoy.html?ciudad=…` y `/hoy/<ciudad>` | "Compartir las ofertas de hoy" (el slug de la ciudad); `/hoy/tandil` es la dirección para la bio de Instagram y la prensa, que resuelve el Worker | Muestra las ofertas vigentes y los locales de la ciudad y lleva a la app, a Play o al App Store. `/hoy` solo, la lista de ciudades |
 | `retiro.html#…` | "Retira otra persona" | Muestra el código y el QR de una compra |
 | `equipo.html#…` | Invitación al equipo de un local | Abre la app con la invitación |
 | `cuenta.html?tipo=…` | Links de los mails de cuenta (Supabase) | Dice si la cuenta quedó confirmada o la contraseña cambiada y abre la app |
@@ -70,7 +71,7 @@ la app. El diseño se puede tocar.
 Las que no tienen nada que mostrar a un buscador llevan `noindex`; `robots.txt`
 explica por qué no se bloquean ahí.
 
-`oferta.html`, `hoy.html` y `retiro.html` leen de Supabase con la URL del proyecto y la
+`oferta.html`, `hoy.html`, `comercio.html` (vía `ofertas.js`) y `retiro.html` leen de Supabase con la URL del proyecto y la
 clave **pública**: lo que se puede leer con ella lo decide la base. Nunca va
 acá la `service_role`.
 
@@ -103,10 +104,19 @@ leen de la base de producción.
 
 ## Lo que cruza con el repo de la app
 
-- **`oferta.html`, `comercio.html` y `hoy.html` tienen una copia** en la app, en
-  `supabase/functions/compartir/testdata/`, para el test que comprueba que
-  la vista previa se inyecta bien en las páginas de verdad. Si cambian acá,
-  hay que volver a copiarlas allá.
+- **`oferta.html`, `comercio.html`, `hoy.html` y `ofertas.js` tienen una copia** en la app, en
+  `supabase/functions/compartir/testdata/`, para los tests que comprueban que
+  la vista previa y la lista se inyectan bien en las páginas de verdad, y que
+  `ofertas.js` arma exactamente el mismo HTML que `contenido.ts` (la función
+  `compartir`). Si cambian acá, hay que volver a copiarlas allá.
+- **Indexación (1880 en la app).** Google lee lo que llega en el HTML: el
+  Worker pone entre las marcas `<!-- contenido -->` de `hoy.html` y
+  `comercio.html` la lista ya armada, la dirección canónica y el JSON-LD
+  (`ItemList`, `Product`/`Offer`, `LocalBusiness`). Las marcas no se borran.
+  Las rutas de estas páginas van con `/` adelante (`/estilo.css`): la misma
+  página se sirve como `/hoy/tandil`.
+- **`sitemap.xml`** tiene las páginas fijas; el Worker le suma al servirlo
+  cada ciudad (`/hoy/<slug>`) y cada local, desde la base.
 - El archivo de Universal Links de iOS (`apple-app-site-association`) está
   preparado en la app, en `docs/ios/`, esperando el Team ID. Cuando se
   publique va en `.well-known/`, sin extensión.

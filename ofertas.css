@@ -1,0 +1,133 @@
+/* Lo que comparten hoy.html y comercio.html: la portada, las tarjetas de
+   oferta, la lista de locales y los botones a las tiendas. Va después de
+   estilo.css. Las clases son las que arma ofertas.js y, del lado del
+   servidor, la función `compartir` (contenido.ts en la app): si cambia una
+   clase acá, cambia allá. */
+:root {
+  --primario: #0868DB; --marino: #06245E; --ambar: #E08A16;
+  --ambar-texto: #A15D00; --ambar-tinte: #FDF3E2; --sobre-primario: #fff;
+  --tinta: #0E1A33; --tinta-suave: #4D5A72; --fondo: #F6F9FD;
+  --papel: #FFFFFF; --borde: #DDE6F1; --alt: #EEF4FB;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --primario: #4AA3FF; --marino: #A9D4FF; --ambar: #F2A93B;
+    --ambar-texto: #F2A93B; --ambar-tinte: #33260F; --sobre-primario: #04122B;
+    --tinta: #E8EEF7; --tinta-suave: #A3B0C4; --fondo: #0A1328;
+    --papel: #111D36; --borde: #24324F; --alt: #182643;
+  }
+}
+body { background: var(--fondo); color: var(--tinta); padding-bottom: 112px; }
+main { max-width: 960px; }
+footer { max-width: 960px; }
+[hidden] { display: none !important; }
+
+.barra { max-width: 960px; margin: 0 auto; padding: 16px 0 12px; display: flex;
+         align-items: center; justify-content: space-between; gap: 12px; }
+.marca { display: inline-flex; align-items: center; gap: 10px; font-weight: 800;
+         font-size: 20px; color: var(--tinta); text-decoration: none; }
+.marca img { width: 32px; height: 32px; border-radius: 8px; }
+
+/* La portada: el bloque azul con la fecha y el título. Es lo primero que
+   ve quien llega desde la bio o una nota, y lo que sale en la captura. */
+.portada { position: relative; overflow: hidden; border-radius: 24px; padding: 28px 24px 26px;
+           color: #fff; background:
+             radial-gradient(120% 140% at 100% 0%, rgba(74,163,255,.55) 0%, rgba(74,163,255,0) 55%),
+             linear-gradient(140deg, #0868DB 0%, #06245E 70%); }
+.portada::after { content: ""; position: absolute; right: -40px; bottom: -60px; width: 220px; height: 220px;
+                  border-radius: 50%; background: rgba(224,138,22,.22); pointer-events: none; }
+.portada h1 { position: relative; z-index: 1; color: #fff; font-size: clamp(28px, 7vw, 40px);
+              line-height: 1.1; letter-spacing: -.02em; margin: 6px 0 10px; max-width: 18ch; }
+.portada .antetitulo { position: relative; z-index: 1; display: inline-block; margin: 0; padding: 4px 12px;
+                       border-radius: 999px; background: #E08A16; color: #2B1B02; font-weight: 800; font-size: 14px; }
+.portada .resumen { position: relative; z-index: 1; margin: 0; color: rgba(255,255,255,.88);
+                    font-size: 16px; max-width: 46ch; }
+.portada.local { display: flex; gap: 18px; align-items: center; }
+.portada.local .antetitulo { background: rgba(255,255,255,.16); color: #fff; }
+
+.seccion h2 { font-size: 20px; margin: 30px 0 12px; }
+
+/* De a una en el teléfono, de a dos o tres en la compu: la tarjeta no baja
+   de 260 px, que es lo que necesita el precio grande. */
+.grilla { display: grid; gap: 14px; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+          list-style: none; padding: 0; margin: 0; }
+.oferta { background: var(--papel); border: 1px solid var(--borde); border-radius: 18px;
+          overflow: hidden; box-shadow: 0 4px 16px rgba(14,26,51,.05); }
+.oferta a { color: inherit; text-decoration: none; display: block; height: 100%; }
+.oferta.agotada .foto { filter: grayscale(1); opacity: .7; }
+.foto { position: relative; aspect-ratio: 16 / 10; background: linear-gradient(135deg, #0868DB, #06245E); }
+.foto img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.foto .rubro { position: absolute; inset: 0; display: grid; place-items: center;
+               color: #fff; font-weight: 800; font-size: 18px; text-align: center; padding: 12px; }
+.descuento { position: absolute; top: 10px; left: 10px; background: #E08A16; color: #2B1B02;
+             font-weight: 800; font-size: 13px; padding: 3px 9px; border-radius: 999px; }
+.ilustrativa { position: absolute; bottom: 8px; right: 8px; background: rgba(6,36,94,.72); color: #fff;
+               font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px; }
+.cuerpo { padding: 12px 16px 16px; }
+.cuerpo h3 { font-size: 17px; line-height: 1.3; margin: 0 0 2px; }
+.local { margin: 0; color: var(--tinta-suave); font-size: 14px; line-height: 1.4; }
+.precios { display: flex; align-items: baseline; gap: 8px; margin: 10px 0 6px; flex-wrap: wrap; }
+.precio { font-size: 22px; font-weight: 800; color: var(--marino); }
+.antes { color: var(--tinta-suave); text-decoration: line-through; font-size: 14px; }
+.retiro { display: inline-block; background: var(--ambar-tinte); color: var(--ambar-texto);
+          font-weight: 700; font-size: 13px; padding: 4px 10px; border-radius: 999px; line-height: 1.4; }
+.estado { margin: 8px 0 0; font-size: 13px; color: var(--tinta-suave); }
+
+.locales { list-style: none; padding: 0; margin: 0; display: grid; gap: 10px;
+           grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); }
+.locales a { display: flex; align-items: center; gap: 12px; padding: 12px 14px; border-radius: 16px;
+             background: var(--papel); border: 1px solid var(--borde); color: inherit; text-decoration: none; }
+.avatar { flex: none; width: 48px; height: 48px; border-radius: 50%; object-fit: cover;
+          display: grid; place-items: center; background: var(--alt); color: var(--primario);
+          font-weight: 800; font-size: 20px; }
+.avatar.grande { width: 76px; height: 76px; font-size: 32px; border: 3px solid rgba(255,255,255,.7);
+                 position: relative; z-index: 1; }
+.datos { flex: 1; min-width: 0; display: flex; flex-direction: column; line-height: 1.35; }
+.datos strong { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.tenue { color: var(--tinta-suave); font-size: 14px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.cuantas { flex: none; background: var(--ambar-tinte); color: var(--ambar-texto); font-weight: 700;
+           font-size: 13px; padding: 3px 10px; border-radius: 999px; }
+
+.nota { font-size: 14px; color: var(--tinta-suave); max-width: 640px; }
+.otra { margin: 22px 0 0; font-weight: 700; }
+.tarjeta { background: var(--papel); border-color: var(--borde); max-width: 640px; }
+.tarjeta p:first-child { margin-top: 0; }
+.tarjeta p:last-child { margin-bottom: 0; }
+.ciudades { list-style: none; padding: 0; display: grid; gap: 10px; max-width: 480px; }
+.ciudades a { display: block; padding: 14px 16px; border-radius: 14px; background: var(--papel);
+              border: 1px solid var(--borde); font-weight: 700; text-decoration: none; }
+.ciudades .tenue { font-weight: 400; }
+
+.esqueleto { background: var(--alt); border-radius: 8px; height: 16px; margin: 8px 0; }
+.portada.cargando { min-height: 150px; }
+
+/* Bajar la app: las dos tiendas siempre, que quien llega desde una nota en
+   la compu puede tener cualquiera de los dos teléfonos. */
+.bajar { margin: 36px 0 8px; padding: 22px; border-radius: 22px; background: var(--papel);
+         border: 1px solid var(--borde); }
+.bajar h2 { margin: 0 0 4px; font-size: 21px; }
+.bajar p { margin: 0 0 16px; color: var(--tinta-suave); }
+.tiendas { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; }
+.tienda { display: inline-flex; align-items: center; border-radius: 10px; text-decoration: none; }
+.tienda-play img { height: 56px; width: auto; margin: -6px; }
+.tienda-ios { gap: 8px; height: 44px; padding: 0 14px; background: #000; color: #fff;
+              border: 1px solid #A6A6A6; }
+.tienda-ios svg { width: 22px; height: 22px; fill: currentColor; }
+.tienda-ios small { display: block; font-size: 9.5px; font-weight: 600; letter-spacing: .06em;
+                    text-transform: uppercase; line-height: 1.1; }
+.tienda-ios b { display: block; font-size: 18px; line-height: 1.1; }
+.boton { display: block; text-align: center; padding: 14px 16px; border-radius: 14px;
+         font-weight: 700; text-decoration: none; font-size: 16px; }
+.boton.lleno { background: var(--primario); color: var(--sobre-primario); }
+.boton.borde { border: 1px solid var(--borde); color: var(--primario); background: var(--papel); }
+.abrir { margin-top: 14px; max-width: 320px; }
+
+/* En el teléfono, la acción queda a mano abajo mientras se mira la lista. */
+.pie-fijo { position: fixed; left: 0; right: 0; bottom: 0; z-index: 5; display: flex; gap: 10px;
+            padding: 12px 16px calc(12px + env(safe-area-inset-bottom)); background: var(--papel);
+            border-top: 1px solid var(--borde); box-shadow: 0 -8px 24px rgba(14,26,51,.08); }
+.pie-fijo .boton { flex: 1; padding: 13px 12px; }
+@media (min-width: 760px) {
+  .pie-fijo { display: none; }
+  body { padding-bottom: 64px; }
+}

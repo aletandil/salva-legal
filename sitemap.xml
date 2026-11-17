@@ -1,8 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!-- Las páginas fijas. Con el Worker de Cloudflare delante (cloudflare/compartir
+     en el repo de la app, 1880), a este archivo se le suman al servirlo las
+     páginas de cada ciudad (`/hoy/<slug>`) y de cada local
+     (`comercio.html?id=…`), que salen de la base. Tandil queda escrita acá
+     para que esté aunque la base no conteste. -->
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url><loc>https://salvaapp.com.ar/</loc><lastmod>2026-11-12</lastmod></url>
+  <url><loc>https://salvaapp.com.ar/</loc><lastmod>2026-11-17</lastmod></url>
   <url><loc>https://salvaapp.com.ar/para-comercios.html</loc><lastmod>2026-11-12</lastmod></url>
-  <url><loc>https://salvaapp.com.ar/hoy.html?ciudad=tandil</loc><changefreq>hourly</changefreq></url>
+  <url><loc>https://salvaapp.com.ar/hoy/tandil</loc><changefreq>hourly</changefreq></url>
   <url><loc>https://salvaapp.com.ar/terminos.html</loc><lastmod>2026-10-04</lastmod></url>
   <url><loc>https://salvaapp.com.ar/privacidad.html</loc></url>
   <url><loc>https://salvaapp.com.ar/eliminar-cuenta.html</loc></url>
