@@ -2,6 +2,11 @@
 # llevan <meta name="robots" content="noindex">. No se bloquean acá a
 # propósito: si el robot no puede entrar, no ve el noindex y la URL puede
 # aparecer igual en los resultados, sin descripción.
+#
+# Las ofertas de hoy de cada ciudad (`/hoy/<ciudad>`) y la página de cada
+# local (`comercio.html?id=…`) están en el sitemap, que arma el Worker de
+# Cloudflare con lo que hay en la base. Una oferta terminada o un link que
+# no lleva a nada salen con noindex, por lo mismo de arriba.
 User-agent: *
 Allow: /
 

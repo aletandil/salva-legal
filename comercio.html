@@ -2,10 +2,11 @@
 <html lang="es">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Un comercio en Salvá</title>
+<meta name="description" content="Publica en Salvá ofertas de lo que tiene vencimiento, a precio rebajado. Seguilo en la app, reservá y retirá en el local.">
 <meta property="og:title" content="Este comercio está en Salvá">
-<meta property="og:description" content="Lo que le sobra al cierre, a precio rebajado. Reservalo en la app y retiralo en el local.">
+<meta property="og:description" content="Publica ofertas de lo que tiene vencimiento, a precio rebajado. Reservalo en la app y retiralo en el local.">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Salvá">
 <meta property="og:locale" content="es_AR">
@@ -13,89 +14,128 @@
 <meta property="og:image:width" content="1024">
 <meta property="og:image:height" content="500">
 <meta name="twitter:card" content="summary_large_image">
-<link rel="stylesheet" href="estilo.css">
-<!-- La dirección del App Store (window.SALVA_APP_STORE) vive en tiendas.js.
-     Con defer corre antes del DOMContentLoaded de abajo. -->
-<script src="tiendas.js" defer></script>
-<style>
-  .botones { display: grid; gap: 10px; margin: 20px 0 8px; }
-  .boton { display: block; text-align: center; padding: 14px 16px; border-radius: 14px;
-           font-weight: 700; text-decoration: none; font-size: 16px; }
-  .boton.play { padding: 18px 16px; font-size: 18px; background: #06245E; color: #fff; }
-  .boton.borde { border: 1px solid var(--borde, #DDE6F1); color: #0868DB; }
-  [hidden] { display: none !important; }
-</style>
+<meta name="theme-color" content="#06245E">
+<link rel="icon" href="/icono.png">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="stylesheet" href="/estilo.css">
+<link rel="stylesheet" href="/ofertas.css">
+<!-- La dirección del App Store (window.SALVA_APP_STORE) vive en tiendas.js,
+     y lo que comparte con hoy.html en ofertas.js. Con defer corren antes
+     del DOMContentLoaded de abajo. -->
+<script src="/tiendas.js" defer></script>
+<script src="/ofertas.js" defer></script>
 <script>
-  // Esta página es el destino del link y del QR del cartel que el comercio
-  // pega en la caja. Trae el id del comercio.
+  // Esta página es el destino del link de un local y del QR del cartel que
+  // el comercio pega en la caja. Trae el id del comercio.
   //
   // Las etiquetas de arriba son las genéricas: con el Worker de Cloudflare
-  // delante (cloudflare/compartir en el repo de la app, 1020) se cambian por
-  // las de este local —nombre, foto, cuántas ofertas tiene— para la vista
-  // previa de WhatsApp.
+  // delante (cloudflare/compartir en el repo de la app, 1020 y 1880) se
+  // cambian por las de este local —nombre, foto, cuántas ofertas tiene— y
+  // el local con sus ofertas llega ya puesto entre las marcas de
+  // `contenido`, con sus datos de schema.org, para Google. Sin el Worker,
+  // lo pide ofertas.js a `comercio_en_la_web`, que devuelve lo mismo que la
+  // tienda del local muestra en la app sin cuenta.
   //
   // No se salta solo a la app: el QR lo escanea sobre todo gente que todavía
   // no la tiene, y un salto que falla deja la pantalla en blanco un segundo
   // antes de mostrar nada. El salto es el botón.
-  var PAQUETE = 'com.oportia.salva';
   var UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
-  // El id del local en el referrer: Play lo guarda con la instalación, y así
-  // se ve cuánta gente trae cada cartel.
-  function play(id) {
-    return 'https://play.google.com/store/apps/details?id=' + PAQUETE +
-      '&referrer=' + encodeURIComponent('utm_source=compartir&utm_medium=local' +
-        (id ? '&utm_content=' + id : ''));
-  }
-  // iPhone y iPad (los iPad nuevos se presentan como Mac con pantalla
-  // táctil): ahí el botón de bajar va al App Store. La ficha de Apple no
-  // tiene referrer, así que de iPhone no se sabe qué cartel trajo a quién.
-  var IOS = /iPhone|iPad|iPod/i.test(navigator.userAgent) ||
-            (/Macintosh/i.test(navigator.userAgent) && navigator.maxTouchPoints > 1);
-  var ANDROID = /Android/i.test(navigator.userAgent);
 
   document.addEventListener('DOMContentLoaded', function () {
-    var id = new URLSearchParams(location.search).get('id') || '';
+    var S = window.SalvaOfertas;
+    var contenido = document.getElementById('contenido');
+    var id = (new URLSearchParams(location.search).get('id') || '').toLowerCase();
     var valido = UUID.test(id);
-    var bajar = document.getElementById('bajar');
-    bajar.href = play(valido ? id : '');
-    if (IOS) {
-      var appStore = window.SALVA_APP_STORE || '';
-      // Sin la dirección (tiendas.js no cargó), mejor sin botón que uno que
-      // mande a Play desde un iPhone.
-      if (appStore) {
-        bajar.href = appStore;
-        bajar.textContent = 'Bajala del App Store';
-      } else {
-        bajar.hidden = true;
-      }
+
+    // El id del local en el referrer: así se ve cuánta gente trae cada
+    // cartel. La ficha de Apple no tiene referrer.
+    var aPlay = S.play('comercio', valido ? id : '', location.search);
+    var appStore = window.SALVA_APP_STORE || '';
+    document.getElementById('play').href = aPlay;
+    if (appStore) document.getElementById('appstore').href = appStore;
+    else document.getElementById('appstore').hidden = true;
+    var bajar = document.getElementById('bajar-fijo');
+    bajar.href = S.IOS && appStore ? appStore : aPlay;
+    if (S.IOS && !appStore) bajar.hidden = true;
+    if (valido) {
+      var abrir = S.abrirLaApp('comercio/' + encodeURIComponent(id), aPlay, S.ANDROID);
+      ['abrir', 'abrir-fijo'].forEach(function (x) {
+        var a = document.getElementById(x);
+        a.href = abrir;
+        a.hidden = false;
+      });
     }
-    if (!valido) return;
-    var abrir = document.getElementById('abrir');
-    var camino = 'comercio/' + encodeURIComponent(id);
-    // En Android, `intent:` abre la app si está y, si no, Play; con
-    // `salva://` solo, sin la app no pasaba nada.
-    abrir.href = ANDROID
-      ? 'intent://' + camino + '#Intent;scheme=salva;package=' + PAQUETE +
-        ';S.browser_fallback_url=' + encodeURIComponent(play(id)) + ';end'
-      : 'salva://' + camino;
-    if (IOS) abrir.textContent = 'Ya tengo la app: abrir';
-    abrir.hidden = false;
+
+    function aviso(x) {
+      contenido.innerHTML = '';
+      document.getElementById(x).hidden = false;
+    }
+
+    if (contenido.querySelector('.servido')) return;
+    if (!valido) { aviso('nosirve'); return; }
+
+    S.rpc('comercio_en_la_web', { p_id: id })
+      .then(function (r) {
+        if (!r || !r.local) { aviso('nosirve'); return; }
+        document.title = r.local.nombre + ' está en Salvá';
+        contenido.innerHTML = S.contenidoDelLocal(r, location.origin, new Date(), S.fotoPublica);
+      })
+      // La base sin la 1880, o sin conexión: lo de siempre, que el local
+      // está en Salvá y los botones.
+      .catch(function () { aviso('generico'); });
   });
 </script>
 </head>
 <body>
+<div class="barra">
+  <a class="marca" href="/"><img src="/icono.png" alt="">Salvá</a>
+</div>
 <main>
-  <h1 style="margin-top:56px">Este comercio está en Salvá</h1>
-  <div class="tarjeta">
-    <p style="margin-top:0">Cuando le sobra algo al cierre, lo publica en
-    <strong>Salvá</strong> a precio rebajado. Seguilo en la app y enterate
-    apenas aparece: lo reservás, lo pagás y lo retirás acá.</p>
+  <div id="contenido">
+<!-- contenido -->
+    <div aria-busy="true">
+      <div class="portada cargando"></div>
+      <ul class="grilla" style="margin-top:28px">
+        <li class="oferta"><div class="foto"></div><div class="cuerpo">
+          <div class="esqueleto" style="width:70%"></div><div class="esqueleto" style="width:45%"></div>
+          <div class="esqueleto" style="width:30%;height:22px"></div></div></li>
+      </ul>
+    </div>
+<!-- /contenido -->
   </div>
-  <div class="botones">
-    <a class="boton lleno play" id="bajar" href="https://play.google.com/store/apps/details?id=com.oportia.salva">Descargar en Google Play</a>
-    <a class="boton borde" id="abrir" hidden href="#">Abrir en la app</a>
+
+  <div id="generico" hidden>
+    <header class="portada"><h1>Este comercio está en Salvá</h1>
+    <p class="resumen">Publica ofertas de lo que tiene vencimiento, a precio rebajado.
+    Seguilo en la app y enterate apenas publica: lo reservás, lo pagás y lo retirás en el local.</p></header>
   </div>
+
+  <div class="tarjeta" id="nosirve" hidden>
+    <p><strong>No encontramos este local.</strong></p>
+    <p>Puede que el link esté incompleto, o que el local ya no esté en Salvá.
+    <a href="/hoy">Mirá las ofertas de hoy en tu ciudad</a>.</p>
+  </div>
+
+  <section class="bajar" aria-labelledby="t-bajar">
+    <h2 id="t-bajar">Seguilo en la app</h2>
+    <p>Es gratis. Te avisamos cuando publica, reservás, pagás online o en el local y
+    retirás con tu QR.</p>
+    <div class="tiendas">
+      <a class="tienda tienda-play" id="play" href="https://play.google.com/store/apps/details?id=com.oportia.salva">
+        <img src="/img/google-play-es-290.webp" srcset="/img/google-play-es-290.webp 290w, /img/google-play-es.png 646w" sizes="145px" width="646" height="250" alt="Disponible en Google Play">
+      </a>
+      <a class="tienda tienda-ios" id="appstore" href="https://apps.apple.com/ar/app/id6832731397">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 2h10a2 2 0 0 1 2 2v16a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2zm0 3v13h10V5H7zm5 14.2a1 1 0 1 0 0 2 1 1 0 0 0 0-2z"/></svg>
+        <span><small>Descargalo en</small><b>App Store</b></span>
+      </a>
+    </div>
+    <a class="boton borde abrir" id="abrir" hidden href="#">Ya tengo la app: abrir</a>
+  </section>
 </main>
-<footer>Salvá · <a href="privacidad.html">Privacidad</a> · <a href="terminos.html">Términos</a></footer>
+<div class="pie-fijo">
+  <a class="boton lleno" id="bajar-fijo" href="https://play.google.com/store/apps/details?id=com.oportia.salva">Bajar la app</a>
+  <a class="boton borde" id="abrir-fijo" hidden href="#">Abrir en la app</a>
+</div>
+<footer>Salvá · <a href="/">Inicio</a> · <a href="/para-comercios.html">Para comercios</a> · <a href="/privacidad.html">Privacidad</a> · <a href="/terminos.html">Términos</a></footer>
 </body>
 </html>
