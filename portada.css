@@ -849,6 +849,10 @@ details p { margin: 0; padding: 0 18px 18px; color: var(--tinta-media); font-siz
 .baldosa .burbuja { width: 36px; height: 36px; border-radius: 12px; margin-bottom: 12px; }
 .baldosa .burbuja .icono { width: 20px; height: 20px; }
 .baldosa h3 { font-size: 18px; }
+/* Un título de una palabra queda solo bajo el ícono; al lado se lee como una etiqueta. */
+.baldosa .cabeza { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
+.baldosa .cabeza .burbuja { margin-bottom: 0; }
+.baldosa .cabeza h3 { margin: 0; }
 .baldosa p { margin: 0; color: var(--tinta-media); font-size: 15px; }
 .mock-mini {
   position: relative; margin: 14px 14px 0; height: 176px; border-radius: 16px; overflow: hidden;
