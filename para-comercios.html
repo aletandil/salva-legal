@@ -547,8 +547,16 @@
         <li><a href="https://play.google.com/store/apps/details?id=com.oportia.salva">Salvá en Google Play</a></li>
       </ul>
     </nav>
-    <p class="legal">© 2026 Salvá · Argentina. Google Play y el logo de Google Play son marcas de Google LLC.</p>
+    <p class="legal">© <span data-anio>2026</span> Salvá · Argentina. Google Play y el logo de Google Play son marcas de Google LLC.</p>
   </div>
 </footer>
+<script id="pone-el-anio">
+  // El año de la portada y del pie, el de hoy en Argentina: así no hay que
+  // acordarse de cambiarlo cada enero. Sin JS queda el escrito en el HTML.
+  document.addEventListener('DOMContentLoaded', function () {
+    var anio = new Intl.DateTimeFormat('es-AR', { timeZone: 'America/Argentina/Buenos_Aires', year: 'numeric' }).format(new Date());
+    document.querySelectorAll('[data-anio]').forEach(function (el) { el.textContent = anio; });
+  });
+</script>
 </body>
 </html>
