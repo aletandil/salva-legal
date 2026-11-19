@@ -136,7 +136,12 @@
     var resto = new URLSearchParams(location.search);
     resto.delete('tipo');
     var consulta = resto.toString();
-    var camino = 'cuenta' + (consulta ? '?' + consulta : '') + location.hash;
+    // El hash se vuelve a armar desde sus parámetros, no se copia crudo:
+    // pegado tal cual adentro del `intent://`, un `#Intent;…;end` propio en
+    // el link le ganaba al nuestro y podía abrir otra app con la sesión.
+    // Rearmado, `#` y `;` salen codificados.
+    var hash = h.toString();
+    var camino = 'cuenta' + (consulta ? '?' + consulta : '') + (hash ? '#' + hash : '');
     // En Android, `intent:` abre la app si está y, si no, Play: un
     // `salva://` sin la app no hace nada y deja a la persona mirando.
     var destino = android
