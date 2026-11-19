@@ -77,6 +77,18 @@ th, td {
 th { font-size: 13px; text-transform: uppercase; letter-spacing: .04em;
      color: var(--tinta-suave); }
 a { color: var(--azul); }
+/* El botón de volver a la app en las páginas que abre (volver, vinculado,
+   equipo, retiro). Era un link de texto de 20 px de alto, que es lo único
+   que hay para tocar ahí: con el pulgar se erraba. 48 px como mínimo, lo
+   que piden Android y Apple. En oscuro, la letra oscura: blanca sobre el
+   azul claro no llegaba a 3:1. */
+.boton-app {
+  display: block; min-height: 48px; padding: 13px 16px; border-radius: 14px;
+  background: var(--azul); color: #fff; font-weight: 700; text-align: center;
+  text-decoration: none;
+}
+.boton-app[hidden] { display: none; }
+@media (prefers-color-scheme: dark) { .boton-app { color: #04122B; } }
 code {
   background: var(--fondo); border: 1px solid var(--borde);
   border-radius: 5px; padding: 1px 5px; font-size: 14px;
