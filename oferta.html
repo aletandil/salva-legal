@@ -23,9 +23,12 @@
 <meta name="theme-color" content="#06245E">
 <link rel="icon" href="icono.png">
 <link rel="stylesheet" href="estilo.css">
-<!-- La dirección del App Store (window.SALVA_APP_STORE) vive en tiendas.js.
-     Con defer corre antes del DOMContentLoaded de abajo. -->
+<!-- La dirección del App Store (window.SALVA_APP_STORE) vive en tiendas.js;
+     el precio, el horario de retiro y la foto de ejemplo, en ofertas.js,
+     para que la oferta diga lo mismo acá que en la lista de /hoy y en la
+     vista previa. Con defer corren antes del DOMContentLoaded de abajo. -->
 <script src="tiendas.js" defer></script>
+<script src="ofertas.js" defer></script>
 <style>
   /* Los colores de la app (Azul Salvá, 2026-10-28) para esta página, que es
      la primera vez que alguien ve Salvá. El resto del sitio sigue con la
@@ -59,6 +62,8 @@
   .descuento { position: absolute; top: 12px; left: 12px; background: #E08A16;
                color: #2B1B02; font-weight: 800; font-size: 14px; padding: 4px 10px;
                border-radius: 999px; }
+  .ilustrativa { position: absolute; bottom: 10px; right: 10px; background: rgba(6,36,94,.72);
+                 color: #fff; font-size: 12px; font-weight: 600; padding: 2px 8px; border-radius: 999px; }
   .cuerpo { padding: 16px 20px 20px; }
   .cuerpo h1 { font-size: 22px; line-height: 1.25; margin: 0 0 4px; }
   .local { margin: 0; color: var(--tinta-suave); font-size: 15px; }
@@ -147,8 +152,19 @@
   function texto(id, valor) { document.getElementById(id).textContent = valor; }
   function mostrar(id) { document.getElementById(id).hidden = false; }
 
-  // A la argentina, como en la app: "$ 4.000", sin centavos.
-  function plata(n) { return '$ ' + Math.round(Number(n)).toLocaleString('es-AR'); }
+  // A la argentina, como en la app y en la vista previa del link: "$ 4.000",
+  // y con centavos si los tiene ("$ 2.999,50"); redondear mostraba otro
+  // precio que el de la app. La misma que `plata` de ofertas.js, con los
+  // puntos a mano: sin `es-AR` en el navegador, `toLocaleString` ponía
+  // comas y "$ 4,000" se lee como cuatro pesos.
+  function plata(n) {
+    var centavos = Math.round(Number(n == null ? 0 : n) * 100);
+    var abs = Math.abs(centavos);
+    var miles = String(Math.floor(abs / 100)).replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+    var resto = abs % 100;
+    var numero = resto === 0 ? miles : miles + ',' + (resto < 10 ? '0' : '') + resto;
+    return (centavos < 0 ? '-' : '') + '$ ' + numero;
+  }
 
   // El día en la hora del local, no la del teléfono.
   function dia(d) {
@@ -229,10 +245,17 @@
         document.title = o.titulo + ' · ' + o.comercio + ' · Salvá';
         texto('titulo', o.titulo);
         texto('local', o.comercio + (o.direccion ? ' · ' + o.direccion : ''));
-        texto('precio', plata(o.precio));
-        if (Number(o.precio_original) > Number(o.precio)) texto('antes', plata(o.precio_original));
+        // Por kilo, el precio del kilo con "/kg", y con variantes, "desde":
+        // como la app y la vista previa del link (2390 en el repo de la
+        // app). Sin ofertas.js (no cargó), el precio pelado de siempre.
+        var S = window.SalvaOfertas;
+        var precio = function (campo) { return S ? S.precioDe(o, campo) : plata(o[campo]); };
+        texto('precio', (o.con_variantes ? 'desde ' : '') + precio('precio'));
+        if (Number(o.precio_original) > Number(o.precio)) texto('antes', precio('precio_original'));
         if (o.descuento > 0) { texto('descuento', o.descuento + '% OFF'); mostrar('descuento'); }
-        texto('retiro', ventana(o.retiro_desde, o.retiro_hasta));
+        // El mismo texto que la lista de /hoy ("En el horario del local,
+        // hasta el viernes 20/11" incluido); sin ofertas.js, el de antes.
+        texto('retiro', (S && S.retiro(o, new Date())) || ventana(o.retiro_desde, o.retiro_hasta));
         texto('quedan', o.agotada
           ? 'Por ahora no quedan. Con la app te avisamos si vuelve.'
           : o.quedan === 1 ? 'Queda 1' : 'Quedan ' + o.quedan);
@@ -241,12 +264,24 @@
 
         // Sólo fotos de nuestro Storage: la URL viene de la base, pero una
         // `img` con cualquier dirección es un rastreador servido desde acá.
-        // La de la oferta y, si no tiene, la del local.
-        var foto = o.foto || o.foto_del_comercio;
-        if (foto && foto.indexOf(SUPABASE_URL + '/storage/v1/object/public/') === 0) {
+        // La de la oferta, después la de ejemplo (copia en img/generica/,
+        // dicha como ilustrativa) y recién después la del local: el mismo
+        // orden que la lista de /hoy y la app. Antes la de ejemplo no
+        // llegaba y la página mostraba el nombre del rubro donde la lista
+        // mostraba la foto.
+        var nuestra = function (u) { return !!u && u.indexOf(SUPABASE_URL + '/storage/v1/object/public/') === 0; };
+        var ejemplo = S ? S.fotoDeEjemplo(location.origin, o.foto_ilustrativa) : null;
+        var foto = nuestra(o.foto) ? o.foto : ejemplo || (nuestra(o.foto_del_comercio) ? o.foto_del_comercio : null);
+        if (foto) {
           var img = document.getElementById('imagen');
+          if (foto === ejemplo) mostrar('ilustrativa');
           img.alt = o.titulo;
-          img.onerror = function () { img.hidden = true; texto('rubro', o.rubro || 'Salvá'); mostrar('rubro'); };
+          img.onerror = function () {
+            img.hidden = true;
+            document.getElementById('ilustrativa').hidden = true;
+            texto('rubro', o.rubro || 'Salvá');
+            mostrar('rubro');
+          };
           img.src = foto;
           img.hidden = false;
         } else {
@@ -280,6 +315,7 @@
       <img id="imagen" hidden alt="">
       <div class="rubro" id="rubro" hidden></div>
       <span class="descuento" id="descuento" hidden></span>
+      <span class="ilustrativa" id="ilustrativa" hidden>Foto ilustrativa</span>
     </div>
     <div class="cuerpo">
       <h1 id="titulo"></h1>
@@ -298,9 +334,12 @@
 
   <div class="tarjeta" id="nosirve" hidden>
     <p style="margin-top:0"><strong>Esta oferta ya no está.</strong></p>
-    <p style="margin-bottom:0">Se agotó, terminó el horario de retiro o el
+    <p>Se agotó, terminó el horario de retiro o el
     comercio la sacó. Los comercios publican más cerca del cierre: en la app
     vas a ver las de hoy.</p>
+    <!-- Sin esto, la página de una oferta terminada no llevaba a ningún lado
+         más que a la tienda. -->
+    <p style="margin-bottom:0"><a href="/hoy">Mirá las ofertas de hoy en tu ciudad</a></p>
   </div>
 
   <div class="tarjeta" id="error" hidden>
