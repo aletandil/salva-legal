@@ -35,7 +35,7 @@ editar creyendo que era la web.
 |---|---|
 | `index.html`, `portada.css`, `portada.js` | La portada |
 | `para-comercios.html` | Todo para comercios: la promo, publicar, entregar, cobrar. Usa `portada.css` y `portada.js`. Se llama así y no `comercios.html` para no confundirse con `comercio.html` (la de un local) |
-| `img/app/captura-*.webp` | Capturas de la app, de sus tests de capturas (`test/widget/capturas_del_comprador_test.dart` y `capturas_del_panel_test.dart`, con `--dart-define=CAPTURAS=<carpeta>`), con datos de ejemplo. Cada una en claro y oscuro, a 786 y 393 de ancho |
+| `img/app/captura-*.webp` | Capturas de la app, de sus tests de capturas (`test/widget/capturas_del_sitio_test.dart`, con `--dart-define=CAPTURAS=<carpeta>`; salen en PNG a 786 de ancho y se pasan a webp con `cwebp`, la de 393 con `-resize 393 852`), con datos de ejemplo: una perfumería, una florería y un almacén, para que no parezca sólo comida. Cada una en claro y oscuro, a 786 y 393 de ancho |
 | `404.html` | La página de "no está" |
 | `estilo.css`, `fuentes/`, `img/`, íconos | Lo compartido |
 | `tiendas.js` | La dirección de la ficha del App Store (`window.SALVA_APP_STORE`), en un solo lugar: la usan la portada y `para-comercios.html` (vía `portada.js`), `oferta.html`, `comercio.html`, `hoy.html`, `cuenta.html` y `404.html`. Lo único que la repite es el JSON-LD de `index.html`, que no puede leer JS, y el `href` inicial del botón del App Store en `hoy.html` y `comercio.html`, para quien no corre JS (el script lo pisa con el de acá) |
