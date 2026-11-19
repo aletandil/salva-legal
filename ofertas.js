@@ -29,11 +29,19 @@
 
   function capital(t) { return t.charAt(0).toUpperCase() + t.slice(1); }
 
-  // A la argentina, como en la app: "$ 4.000", sin centavos. Los puntos a
-  // mano: no todos los navegadores traen `es-AR`.
+  // A la argentina, como en la app: "$ 4.000", y con centavos si los tiene
+  // ("$ 2.999,50"). Igual que `plata` de la función (vista.ts): redondear
+  // acá hacía que la lista dijera "$ 3.000" y la oferta, en la app y en la
+  // vista previa, "$ 2.999,50". Se cuenta en centavos enteros para que
+  // 0,1 + 0,2 no deje un ",30000001". Los puntos a mano: no todos los
+  // navegadores traen `es-AR`.
   function plata(n) {
-    var v = Math.round(Number(n == null ? 0 : n));
-    return (v < 0 ? '-' : '') + '$ ' + String(Math.abs(v)).replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+    var centavos = Math.round(Number(n == null ? 0 : n) * 100);
+    var abs = Math.abs(centavos);
+    var miles = String(Math.floor(abs / 100)).replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+    var resto = abs % 100;
+    var numero = resto === 0 ? miles : miles + ',' + (resto < 10 ? '0' : '') + resto;
+    return (centavos < 0 ? '-' : '') + '$ ' + numero;
   }
 
   // Por kilo (1150), el precio del kilo con "/kg", como la app.
@@ -311,6 +319,8 @@
   global.SalvaOfertas = {
     escapar: escapar,
     plata: plata,
+    precioDe: precioDe,
+    fotoDeEjemplo: fotoDeEjemplo,
     cuando: cuando,
     retiro: retiro,
     tarjetaDeOferta: tarjetaDeOferta,
