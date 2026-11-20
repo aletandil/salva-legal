@@ -27,7 +27,19 @@
       ' a ' + b.toLocaleTimeString('es-AR', o);
   }
 
-  function plata(n) { return '$ ' + Math.round(n).toLocaleString('es-AR'); }
+  // Con centavos si los tiene, como la app: quien va a retirar tiene que
+  // llevar justo lo que dice el ticket, y redondeado decía otra cifra. Los
+  // puntos a mano, como en ofertas.js: sin `es-AR`, `toLocaleString` pone
+  // comas. El espacio duro, para que el "$" no quede solo al final de una
+  // línea.
+  function plata(n) {
+    var centavos = Math.round(Number(n == null ? 0 : n) * 100);
+    var abs = Math.abs(centavos);
+    var miles = String(Math.floor(abs / 100)).replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+    var resto = abs % 100;
+    var numero = resto === 0 ? miles : miles + ',' + (resto < 10 ? '0' : '') + resto;
+    return (centavos < 0 ? '-' : '') + '$\u00a0' + numero;
+  }
 
   document.addEventListener('DOMContentLoaded', function () {
     var token = location.hash.replace(/^#/, '');
@@ -91,7 +103,7 @@
     volvé a abrir el link.</p>
   </div>
 
-  <p><a id="abrir" hidden href="#">Abrir en la app</a></p>
+  <p><a class="boton-app" id="abrir" hidden href="#">Abrir en la app</a></p>
   <p style="color:var(--tinta-suave);font-size:14px">
     <strong>Salvá</strong> es lo que iba a tirarse, a precio rebajado, en
     comercios cerca tuyo.</p>

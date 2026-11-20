@@ -130,7 +130,11 @@
                 p.get('error') || h.get('error');
     var tipo = p.get('tipo');
     var android = /Android/i.test(navigator.userAgent);
-    var telefono = android || /iPhone|iPad|iPod/i.test(navigator.userAgent);
+    // Los iPad nuevos se presentan como Mac: sin la pantalla táctil en la
+    // cuenta, un iPad con la app no tenía botón para abrirla (las demás
+    // páginas ya lo miran así).
+    var telefono = android || /iPhone|iPad|iPod/i.test(navigator.userAgent) ||
+      (/Macintosh/i.test(navigator.userAgent) && navigator.maxTouchPoints > 1);
 
     // Lo que la app necesita es lo que vino de Supabase, sin `tipo`.
     var resto = new URLSearchParams(location.search);
