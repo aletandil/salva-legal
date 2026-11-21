@@ -252,7 +252,7 @@
         var precio = function (campo) { return S ? S.precioDe(o, campo) : plata(o[campo]); };
         texto('precio', (o.con_variantes ? 'desde ' : '') + precio('precio'));
         if (Number(o.precio_original) > Number(o.precio)) texto('antes', precio('precio_original'));
-        if (o.descuento > 0) { texto('descuento', o.descuento + '% OFF'); mostrar('descuento'); }
+        if (o.descuento > 0) { texto('descuento', '\u2212' + o.descuento + '%'); mostrar('descuento'); }
         // El mismo texto que la lista de /hoy ("En el horario del local,
         // hasta el viernes 20/11" incluido); sin ofertas.js, el de antes.
         texto('retiro', (S && S.retiro(o, new Date())) || ventana(o.retiro_desde, o.retiro_hasta));

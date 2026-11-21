@@ -113,7 +113,7 @@
       ? '<img src="' + escapar(foto) + '" alt="" loading="lazy">'
       : '<div class="rubro">' + escapar(o.rubro || 'Salvá') + '</div>');
     if (foto && foto === ejemplo) p.push('<span class="ilustrativa">Foto ilustrativa</span>');
-    if ((o.descuento || 0) > 0 && !agotada) p.push('<span class="descuento">' + o.descuento + '% OFF</span>');
+    if ((o.descuento || 0) > 0 && !agotada) p.push('<span class="descuento">&minus;' + o.descuento + '%</span>');
     p.push('</div>');
     p.push('<div class="cuerpo">');
     p.push('<h3>' + escapar(o.titulo || '') + '</h3>');
